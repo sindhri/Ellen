@@ -5,12 +5,20 @@
 %normalized by the mean and std of either (WT + DMSO) or (related WT + DMSO) by
 %date
 
+%20200814, unified the output to be the similar structure as in the
+%nonburst outpt and individualData.csv
+
 [filename,pathname] = uigetfile('*.csv','select the zscore file');
 filename_noext = strsplit(filename,'.');
 filename_noext = filename_noext{1};
 filename_output = [filename_noext '_zscore_burst.csv'];
 main_table = readtable([pathname filename]);
 
+%removed first column and renamed 'experiment' to be 'plate'
+%so it is consistent with 'individualData.csv'
+main_table(:,1)=[];
+main_table.Properties.VariableNames(1) = {'plate'};
+    
 %remove whole columns with missing values
 missing_matrix = ismissing(main_table);
 to_remove = [];
@@ -25,15 +33,15 @@ main_table = main_table(:,column_index_to_keep);
 for i = 1:size(main_table,1)
     temp = strsplit(main_table.genotype{i},' ');
     main_table.type{i} = temp{1};
-    temp = strsplit(main_table.experiment{i},'_');
+    temp = strsplit(main_table.plate{i},'_');
     main_table.date{i} = temp{1};
 end
 main_table.genotype_plate_combined = strcat(main_table.genotype,...
     '__',main_table.date);
 
 %genotype = unique(main_table.genotype);
-index_start = 5;
-index_end = 18;
+index_start = 4;
+index_end = 17;
 parameters = main_table.Properties.VariableNames(index_start:index_end);
 
 %find the WT and 
