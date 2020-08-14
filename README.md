@@ -1,5 +1,15 @@
 # Ellen Hoffman fish data aggregation
 
+The following two pipeline lines work:
+
+Individualdata ---> calculate_zscore ---> average_after_zscore ---> avgz_to_clustergram
+
+splitmean ---> calculate_zscore_burst ---> average_after_zscore ---> avgz_to_clustergram
+
+This one needs more work:
+
+splitmean ---> calculate_zscore ---> average_after_zscore ---> avgz_to_clustergram
+
 ## calculate_zscore.m
 Input type 1: Jeff's pipeline (usualy named 'individualData_xxxxxxxx.csv')
 
