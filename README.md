@@ -31,8 +31,7 @@ Trim the file so only HOM types are left
 Average across fish, also aggregate across activities
 
 Output1: mean_by_geno. The parameter/activities are averaged acrossed fish for each geno
-
-If it is not the bust file, also export the aggregated zscore:
+If it is not the bust file, also export the aggregated zscore:  
 Output2: _averaged. The parameter/activities are aggregated to rms and mean for each group, bout, activity, sleep, all
 
 ## avgz_to_clustergram.m
