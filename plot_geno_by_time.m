@@ -28,7 +28,7 @@ function plot_geno_by_time(output)
             h(j) = plot_m_std(mean1{j,2:end}, std1{j,2:end},...
                 mean2{j,2:end}, std2{j,2:end},color_lab{j});
         end
-        legend(h, output.geno, 'interpreter','none','location',location_lab{i});
+        legend(h, mean1.geno, 'interpreter','none','location',location_lab{i});
         title(activity_name);
         
         set(gcf, 'PaperPosition', [0 0 20 10]); %Position plot at left hand corner with width 5 and height 5.
