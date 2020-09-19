@@ -40,6 +40,6 @@ Use the mean_by_geno to generate a clustergram.
 Use customer color my_colormap. Replaced the underscores in the labels with space.
 
 ## From Raw score for pre and post experiments to geno_by_time plot
-pre_post.m, process the pre and post data files (converted in excel format) and geno text file.
-plot_geno_by_time.m, use the output from the pre_post and make geno_by_time plots, saved in a 'plots' folder
-script_pre_post.m, a script that uses function pre_post and plot_geno_by_time, so that you can start from selecting the pre and post data file (in excel format), and geno text file, and the script would automatically generate geno_by_time plots.
+* pre_post.m, process the pre and post data files (converted in excel format) and geno text file.
+* plot_geno_by_time.m, use the output from the pre_post and make geno_by_time plots, saved in a 'plots' folder
+* script_pre_post_analysis.m, a script that uses function pre_post and plot_geno_by_time, so that you can start from selecting the pre and post data file (in excel format), and geno text file, and the script would automatically generate geno_by_time plots.
