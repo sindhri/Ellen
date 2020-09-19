@@ -19,7 +19,10 @@ post = add_fish_column(post);
 
 % import geno file and convert it to a table with columns 'geno' and 'fish'
 % mapping
-geno_file = importdata('files/200725_0Bgenotype.txt', '\t', 2);
+%geno_file = importdata('files/200725_0Bgenotype.txt', '\t', 2);
+[filename_geno,pathname] = uigetfile('*.txt','select the geno text file');
+geno_file = importdata([pathname, filename_geno], '\t', 2);
+
 geno_table = import_geno_to_table(geno_file);
 
 % add the geno column to both pre and post dataset
