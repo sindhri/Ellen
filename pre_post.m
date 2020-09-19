@@ -1,11 +1,17 @@
 % pre and post drug experiment data
 % 96 fish, measured 1 time per minute (60 seconds) for a total of 30 minutes
 % corresponding geno type for each fish is in the text file '200725_0Bgenotype.txt'
-function output = pre_post
-pre = readtable('files/200725_0B_pre.xlsx');
-post = readtable('files/200725_0B_post.xlsx');
-% remove the 5 extra seconds from post, so it's the same size as pre
-post(post.start==1800,:)=[];
+function output = pre_post()
+%post = readtable('files/200725_0B_pre.xlsx');
+%post = readtable('files/200725_0B_post.xlsx');
+[filename_pre,pathname] = uigetfile('*.xlsx','select the pre file in excel format');
+pre = readtable(([pathname filename_pre]));
+
+[filename_post,pathname] = uigetfile('*.xlsx','select the post file in excel format');
+post = readtable(([pathname filename_post]));
+
+% remove the extra seconds from post after 1800 seconds, so it's the same size as pre
+post(post.start>=1800,:)=[];
 
 % add a fish column based on the last two digits of location
 pre = add_fish_column(pre);
@@ -23,6 +29,8 @@ post_with_geno = innerjoin(geno_table, post, 'keys','fish');
 % gather the parameters to measure in this new dataset
 parameters = pre_with_geno.Properties.VariableNames(13:21);
 
+output.geno = geno_file.colheaders;
+output.parameters = parameters;
 
 % aggregation across fish and time
 [output.pre_fish_time_mean, output.pre_fish_time_std] = aggr_func(pre_with_geno, ...
