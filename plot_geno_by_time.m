@@ -17,7 +17,8 @@ function plot_geno_by_time(output)
         
         figure;
         hold on;
-        color_lab = {'b','r','y','m','k',[0.4,0.15,0.3], [0.4, 0.9, 0.76],[0.3,0.55,0.87]};
+        color_lab = {[1,0,0],[0,0,0.5],[1,0.4,0],[1,1,0],...
+        [0.4,0.4,1],[0.4,1,0.4],[1,0,1],[0,1,1]};
         % in general put the legend in the top left corner
         location_lab = repmat({'northwest'},[n_params,1]);
         % in a couple special cases put the legend in the bottom left corner
