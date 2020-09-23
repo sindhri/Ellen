@@ -1,0 +1,26 @@
+%try use the difference wave of pre and post, then 3-way anova
+%only use the mean across the fish in that geno across time
+
+function do_anova(output)
+    ncolumn_to_skip = 2 %geno, GroupCount
+    pre = output.pre_geno_mean{:,ncolumn_to_skip+1:end};
+    post = output.post_geno_mean{:,ncolumn_to_skip+1:end};
+    diff = post - pre{ncolumn_to_skip+1,:};
+    
+    activity_names = output.pre_geno_mean.Properties.VariableNames(ncolumn_to_skip+1:end);
+    geno_table = output.pre_geno_mean(:,1);
+    for i = 1:size(geno_table,1)
+        temp = split(geno_table.geno{i}, '+');
+        geno_table.factor1{i} = regexprep(temp{1},' ','');
+        geno_table.factor2{i} = regexprep(temp{2},' ','');
+        geno_table.factor3{i} = regexprep(temp{3},' ','');
+    end
+    
+    data = 
+    for i = 1:length(activity_names)
+        activity_diff = diff(:,i);
+        
+end
+
+
+function anova_one_variable(pre, post,

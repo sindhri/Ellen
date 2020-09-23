@@ -1,4 +1,9 @@
+%20200922, used the actual column names from the aggregated table
+
 function plot_prepost(output)
+    ncolumn_to_skip = 2; %skip geno, GroupCount
+    activity_names = output.pre_geno_mean.Properties.VariableNames(ncolumn_to_skip+1:end);
+
     color_lab = {[1,0,0],[0,0,0.5],[1,0.4,0],[1,1,0],...
         [0.4,0.4,1],[0.4,1,0.4],[1,0,1],[0,1,1]};
     location_lab = repmat({'northwest'},[length(output.parameters),1]);
@@ -15,8 +20,8 @@ function plot_prepost(output)
 
     x_label = {'pre','post'};
     
-    for i = 1:length(output.parameters)
-        activity_name = output.parameters{i};
+    for i = 1:length(activity_names)
+        activity_name = activity_names{i};
         %locate the correct column for this parameter
         pre_mean = pre_geno_mean{:,2+i};
         pre_std = pre_geno_std{:,2+i};

@@ -1,26 +1,29 @@
+%20200922, used the actual column names from the aggregated table
 function plot_geno_by_time(output)
     if exist('plots','dir')==0
         mkdir('plots');
     end
     
     %generate a plot for each parameter, skipping the first three columns
-    %which is geno, start, GroupCount 
-    n_params = length(output.parameters);
-    for i = 1:n_params
-        activity_name = output.parameters{i};
-        param_index = i + 3; %skipping geno, start, GroupCount
+    %number of columns to skip, geno, start, GroupCount 
+    ncolumn_to_skip = 3;
+    activity_names = output.pre_geno_time_mean.Properties.VariableNames(ncolumn_to_skip+1:end);
+    n_activities = length(activity_names);
+    for i = 1:n_activities
+        activity_name = activity_names{i};
+        activity_index = i + ncolumn_to_skip; %skipping geno, start, GroupCount
         
-        mean1 = preprocess(output.pre_geno_time_mean, param_index);
-        std1 = preprocess(output.pre_geno_time_std, param_index);
-        mean2 = preprocess(output.post_geno_time_mean, param_index);
-        std2 = preprocess(output.post_geno_time_std, param_index);
+        mean1 = preprocess(output.pre_geno_time_mean, activity_index);
+        std1 = preprocess(output.pre_geno_time_std, activity_index);
+        mean2 = preprocess(output.post_geno_time_mean, activity_index);
+        std2 = preprocess(output.post_geno_time_std, activity_index);
         
         figure;
         hold on;
         color_lab = {[1,0,0],[0,0,0.5],[1,0.4,0],[1,1,0],...
         [0.4,0.4,1],[0.4,1,0.4],[1,0,1],[0,1,1]};
         % in general put the legend in the top left corner
-        location_lab = repmat({'northwest'},[n_params,1]);
+        location_lab = repmat({'northwest'},[n_activities,1]);
         % in a couple special cases put the legend in the bottom left corner
         location_lab{2} = 'southwest';
         location_lab{8} = 'southwest';

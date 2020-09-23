@@ -1,3 +1,4 @@
+% 20200922, removed 'Fun_' from the column names in the aggregated files
 % pre and post drug experiment data
 % 96 fish, measured 1 time per minute (60 seconds) for a total of 30 minutes
 % corresponding geno type for each fish is in the text file '200725_0Bgenotype.txt'
@@ -36,6 +37,11 @@ output.geno = geno_file.colheaders;
 output.parameters = parameters;
 
 % aggregation across fish and time
+% The first aggregation is almost unnecerry, because the original file is 
+% already the format of one row per fishxstartxgeno 
+% but this step removed irrelevant variables and
+% sorted the variables by the order of fish,start,geno, 
+% so it is consistent with later aggregated files
 [output.pre_fish_time_mean, output.pre_fish_time_std] = aggr_func(pre_with_geno, ...
     {'fish','start','geno'}, parameters);
 [output.post_fish_time_mean, output.post_fish_time_std] = aggr_func(post_with_geno, ...
@@ -93,4 +99,9 @@ tablem = varfun(mean_function,data_table,...
 tables = varfun(std_function,data_table,...
     'GroupingVariables',aggr_var,...
     'InputVariables',{parameters{:}});
+
+%remove 'Fun_' in the columns of the aggregated tables
+tablem.Properties.VariableNames=regexprep(tablem.Properties.VariableNames, 'Fun_', '');
+tables.Properties.VariableNames=regexprep(tables.Properties.VariableNames, 'Fun_', '');
+
 end
