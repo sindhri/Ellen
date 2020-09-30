@@ -1,3 +1,8 @@
+%todo
+%1. analysis on HOM alone and WT alone, check the interaction:
+% MC_DMSO * H20_PTZ
+%2. make the anova more friendly
+
 %20200929, saved tables
 %try use the difference wave of pre and post, then 3-way anova
 %only use the mean across the fish in that geno across time
