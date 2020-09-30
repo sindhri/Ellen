@@ -1,3 +1,4 @@
+%20200929, added saving figures in fig
 %20200922, used the actual column names from the aggregated table
 function plot_geno_by_time(output)
     if exist('plots','dir')==0
@@ -35,9 +36,14 @@ function plot_geno_by_time(output)
         legend(h, mean1.geno, 'interpreter','none','location',location_lab{i});
         title(activity_name);
         
+        if exist([output.pathname 'line/'],'dir')~=7
+            mkdir([output.pathname 'line/']);
+        end
+
         set(gcf, 'PaperPosition', [0 0 20 10]); %Position plot at left hand corner with width 5 and height 5.
         set(gcf, 'PaperSize', [20 10]); 
-        saveas(gcf,['plots/geno_time_' activity_name],'pdf');
+        saveas(gcf,[output.pathname 'line/geno_time_' activity_name],'pdf');
+        saveas(gcf,[output.pathname 'line/geno_time_' activity_name],'fig');
         close;
     end
     %plotting 8 types are too much. need to split or aggregate

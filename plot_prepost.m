@@ -1,3 +1,4 @@
+%20200929, added saving fig figures
 %20200922, used the actual column names from the aggregated table
 
 function plot_prepost(output)
@@ -20,6 +21,10 @@ function plot_prepost(output)
 
     x_label = {'pre','post'};
     
+    if exist([output.pathname 'line/'],'dir')~=7
+       mkdir([output.pathname 'line/']);
+    end
+        
     for i = 1:length(activity_names)
         activity_name = activity_names{i};
         %locate the correct column for this parameter
@@ -45,7 +50,8 @@ function plot_prepost(output)
         
         set(gcf, 'PaperPosition', [0 0 10 5]); %Position plot at left hand corner with width 5 and height 5.
         set(gcf, 'PaperSize', [10 5]); 
-        saveas(gcf,['plots/prepost_' activity_name],'pdf');
+        saveas(gcf,[output.pathname 'line/prepost_' activity_name],'pdf');
+        saveas(gcf,[output.pathname 'line/prepost_' activity_name],'fig');
         close;
     end
 end
