@@ -39,7 +39,16 @@ Use the mean_by_geno to generate a clustergram.
 
 Use customer color my_colormap. Replaced the underscores in the labels with space.
 
-## From Raw score for pre and post experiments to geno_by_time plot
+## Seizure analysis (pre-post) script_pre_post_analysis.m
+* Summary: From Raw score for pre and post experiments to various plots, anovas, and an intermdeidate csv file
+* Step 1: first make a folder that inlcudes the following three files: pre, post, geno
+* Step 2: save the pre and post files into the excel format, with the xlsx extension. (Matlab is able to easily convert excel files into tables, but not with csvs)
+* Step 3: run 'script_pre_post_analysis;' on the command line. You will select the three files in order: pre, post, geno. (If it's an windows computer it would show the prompt, but the prompts don't work in a Mac OS system)
+* Step 4: check the outputs which will be saved in the folder that you have created in the first place!
+
 * pre_post.m, process the pre and post data files (converted in excel format) and geno text file.
 * plot_geno_by_time.m, use the output from the pre_post and make geno_by_time plots, saved in a 'plots' folder
+* plot_prepost.m, plot the pre post data
+* plot_bars.m, plot the data by all the combinations of factors (to do: need to change to boxplots)
+* do_anova.m, do 3-way anova on the difference score: post-pre, (to do: split geno and do anova on both the pre and post data)
 * script_pre_post_analysis.m, a script that uses function pre_post and plot_geno_by_time, so that you can start from selecting the pre and post data file (in excel format), and geno text file, and the script would automatically generate geno_by_time plots.
