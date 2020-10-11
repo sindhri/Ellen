@@ -41,9 +41,9 @@ Use customer color my_colormap. Replaced the underscores in the labels with spac
 
 ## Seizure analysis (pre-post) script_pre_post_analysis.m
 * Summary: From Raw score for pre and post experiments to various plots, anovas, and an intermdeidate csv file
-* Step 1: first make a folder that inlcudes the following three files: pre, post, geno
-* Step 2: save the pre and post files into the excel format, with the xlsx extension. (Matlab is able to easily convert excel files into tables, but not with csvs)
-* Step 3: run 'script_pre_post_analysis;' on the command line. You will select the three files in order: pre, post, geno. (If it's an windows computer it would show the prompt, but the prompts don't work in a Mac OS system)
+* Step 1: first make a folder that includes the following three files: pre, post, geno.
+* Step 2: save the pre and post files into the excel format, with the xlsx extension. (Matlab is able to easily convert excel files into tables, but not from csv files)
+* Step 3: run 'script_pre_post_analysis;' on the command line. You will select the three files in order: pre (the excel version), post (the excel version), geno. If it's an windows computer it would show the prompt for each type of file, but the prompts don't work in a Mac OS system. so just follow the order or pre-post-geno.
 * Step 4: check the outputs which will be saved in the folder that you have created in the first place!
 
 * pre_post.m, process the pre and post data files (converted in excel format) and geno text file.
