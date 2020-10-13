@@ -1,3 +1,4 @@
+% 20201013, fixed message box multiple line bug
 % 20200929, added saving an intermediate file of individual fish aggregated
 % across time
 % 20200922, removed 'Fun_' from the column names in the aggregated files
@@ -150,5 +151,5 @@ time = repmat('pre_',[size(pre,1),1]);
     post = addvars(post,time,'Before','geno');
     final = [pre;post];
     writetable(final,[pathname filename]);
-    msgbox(['Intermediate file saved at\n' pathname filename]);
+    msgbox(sprintf(['Intermediate file saved at\n' pathname filename]));
 end
