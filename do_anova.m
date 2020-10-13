@@ -10,33 +10,14 @@ function combined_table = do_anova(output)
 
     pre_table = output.pre_geno_mean;
     post_table = output.post_geno_mean;
+    geno_table_index = 1;
     activity_col_index = 3:size(pre_table,2); %skip the first two columns, geno, GroupCount
     
-    % fpr both pre and post tables, split the geno column by + 
-    % and extract the original three levels of
-    % factors: geno x drug1 x drug2
-    geno_table = pre_table(:,1);
-    for i = 1:size(geno_table,1)
-    %remove space and underscore
-        temp = split(geno_table.geno{i}, '+');
-        factor1{i,1} = regexprep(temp{1},' |_','');
-        factor2{i,1} = regexprep(temp{2},' |_','');
-        factor3{i,1} = regexprep(temp{3},' |_','');
-    end
-    pre_table.factor1 = factor1;
-    pre_table.factor2 = factor2; 
-    pre_table.factor3 = factor3; 
-    % add the time column for pre
-    pre_table.time = repmat('pre_', [size(geno_table,1),1]);
-    
-    post_table.factor1 = factor1;
-    post_table.factor2 = factor2; 
-    post_table.factor3 = factor3;   
-    %add the time column for post
-    post_table.time = repmat('post', [size(geno_table,1),1]);
-    
-    % combine pre and post table
-    combined_table = [pre_table; post_table];
+    % combine the pre and post table, add time(either pre_ or post), 
+    % and extract the geno column into three factors
+    combined_table = combine_add_time_factors(pre_table, post_table,...
+    geno_table_index);
+
     % extract HOM and WT from the combined table
     HOM_table = combined_table(contains(combined_table.factor1, 'HOM'),:);
     WT_table = combined_table(contains(combined_table.factor1, 'WT'),:);
@@ -44,9 +25,9 @@ function combined_table = do_anova(output)
     % calculate the difference post-pre
     % there are 4 extra columns added to the end
     diff = post_table{:,activity_col_index} - pre_table{:,activity_col_index};
-    diff_table = pre_table;
+    diff_table = combined_table(strcmp(combined_table.time, 'pre')==1,:);
     diff_table{:,activity_col_index} = diff;
-    diff_table.time = repmat('diff', [size(geno_table,1), 1]);
+    diff_table.time = repmat('diff', [size(diff_table,1), 1]);
     
     % do anova and make anova plots for each table
     destination_folder = [output.pathname 'anova/'];
