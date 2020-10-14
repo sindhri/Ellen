@@ -1,9 +1,11 @@
 % 20201013
-% combine the pre and post table, add time(either pre_ or post), 
+% combine the pre and post table
 % and extract the geno column into three factors
+% add time(either pre_ or post)
+% add difference table
 
-function combined_table = combine_add_time_factors(pre_table, post_table,...
-    geno_table_index)
+function combined_table = helper_combine(pre_table, post_table,...
+    geno_table_index, activity_col_index)
 
     
     % fpr both pre and post tables, split the geno column by + 
@@ -31,13 +33,21 @@ function combined_table = combine_add_time_factors(pre_table, post_table,...
     post_table.factor2 = factor2; 
     post_table.factor3 = factor3;   
     %add the time column for post
-    time = cell(1);
     for i = 1:size(geno_table,1)
         time{i,1} = 'post';
     end
     post_table.time = time;
     
-    % combine pre and post table
-    combined_table = [pre_table; post_table];
-
+    % calculate the difference post-pre
+    % there are 4 extra columns added to the end
+    diff = post_table{:,activity_col_index} - pre_table{:,activity_col_index};
+    diff_table = pre_table;
+    diff_table{:,activity_col_index} = diff;
+    for i = 1:size(geno_table,1)
+        time{i,1} = 'diff';
+    end
+    diff_table.time = time;
+    % combine pre, post, and diff table
+    combined_table = [pre_table; post_table; diff_table];
+    
 end

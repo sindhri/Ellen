@@ -15,20 +15,16 @@ function combined_table = do_anova(output)
     
     % combine the pre and post table, add time(either pre_ or post), 
     % and extract the geno column into three factors
-    combined_table = combine_add_time_factors(pre_table, post_table,...
-    geno_table_index);
+    combined_table = helper_combine(pre_table, post_table,...
+    geno_table_index, activity_col_index);
 
     % extract HOM and WT from the combined table
-    HOM_table = combined_table(contains(combined_table.factor1, 'HOM'),:);
-    WT_table = combined_table(contains(combined_table.factor1, 'WT'),:);
-    
-    % calculate the difference post-pre
-    % there are 4 extra columns added to the end
-    diff = post_table{:,activity_col_index} - pre_table{:,activity_col_index};
-    diff_table = combined_table(strcmp(combined_table.time, 'pre')==1,:);
-    diff_table{:,activity_col_index} = diff;
-    diff_table.time = repmat('diff', [size(diff_table,1), 1]);
-    
+    pre_post_table = combined_table(strcmp(combined_table.time, 'diff')~=1,:);
+    HOM_table = pre_post_table(contains(pre_post_table.factor1, 'HOM'),:);
+    WT_table = pre_post_table(contains(pre_post_table.factor1, 'WT'),:);
+
+    diff_table = combined_table(strcmp(combined_table.time, 'diff')==1,:);
+
     % do anova and make anova plots for each table
     destination_folder = [output.pathname 'anova/'];
     if exist(destination_folder,'dir')~=7
