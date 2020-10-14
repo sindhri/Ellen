@@ -174,7 +174,7 @@ function make_one_bar(datam,datas,col_index,level,color)
     n_bar = size(datam,1);
     x = 1:n_bar;
     m = datam{:,col_index};
-    s = datas{:,col_index};
+    s = datas{:,col_index};    
     bar(x,m,'FaceColor',color);
     hold on;
     er = errorbar(x,m,s,s);    
