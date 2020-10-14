@@ -65,14 +65,18 @@ Use customer color my_colormap. Replaced the underscores in the labels with spac
   </tr>
   <tr>
     <td>plot_bars.m</td>
-    <td>plot the data by all the combinations of factors (to do: need to change to boxplots)</td>
+    <td>plot the data by all the combinations of factors</td>
+  </tr>
+  <tr>
+    <td>make_boxplots.m</td>
+    <td>make boxplots for all the combinations of factors including geno, drug1, drug2, pre and post</td>
   </tr>
   <tr>
     <td>do_anova.m</td>
-    <td>do 3-way anova on the difference score: post-pre, (to do: split geno and do anova on both the pre and post data)</td>
+    <td>do 3-way anova on the difference score (geno, drug1, drug2), HOM and WT data (pre/post, drug1, drug2)</td>
   </tr>
   <tr>
     <td>script_pre_post_analysis.m</td>
-    <td>a script that uses function pre_post and plot_geno_by_time, so that you can start from selecting the pre and post data file (in excel format), and geno text file, and the script would automatically generate geno_by_time plots.</td>
+    <td>a script that chains oher functions. First use  pre_post to create the output variable. Then use the output variable to make various plots and do anovas.</td>
   </tr>
 </table>
