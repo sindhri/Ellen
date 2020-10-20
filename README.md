@@ -1,14 +1,15 @@
 # Ellen Hoffman fish data aggregation
 
 ## Pipeline 1: Best Recovery Drug
-Goal: Multiple drugs were applied to mutant fish. Identify the one drug that will make the fish behave the most like the wild type.
-Steps:
+### Goal: 
+Multiple drugs were applied to mutant fish. Identify the one drug that will make the fish behave the most like the wild type.
+### Steps:
 1. calculate zscore based on wild type, calculate_zscore.m/calculate_zscore_burst.m
 2. average across all the fish for each drug and geno (HOM and WT), average_after_zscore.m
 3. make clustergram, avgz_to_clustergram.m
 4. PCA and euclidean distance.
 
-Details:
+More Details:
 The following two process lines work:
 
 Individualdata ---> calculate_zscore ---> average_after_zscore ---> avgz_to_clustergram
@@ -19,6 +20,7 @@ This one needs more work:
 
 splitmean ---> calculate_zscore ---> average_after_zscore ---> avgz_to_clustergram
 
+### file details
 <table>
   <tr>
     <th>File name</th>
@@ -74,12 +76,21 @@ HOM — DMSO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n
 HOM — MC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HOM — MC — H2O  
 HOM — MC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HOM — MC — PTZ  
 
-* Summary: From Raw score for pre and post experiments to various plots, anovas, and an intermdeidate csv file
+### Questions to ask:
+1. effect of PTZ
+2. effect of PTZ in HOM and Wild Type(WT)
+3. effect of MC (Can MC cancel PTZ's effect)
+
+### Procedure Summary: 
+From Raw score for pre and post experiments to various plots, anovas, and an intermdeidate csv file
+
+### How to run
 * Step 1: first make a folder that includes the following three files: pre, post, geno.
 * Step 2: save the pre and post files into the excel format, with the xlsx extension. (Matlab is able to easily convert excel files into tables, but not from csv files)
 * Step 3: run 'script_pre_post_analysis;' on the command line. You will select the three files in order: pre (the excel version), post (the excel version), geno. If it's an windows computer it would show the prompt for each type of file, but the prompts don't work in a Mac OS system. so just follow the order of pre-post-geno.
 * Step 4: check the outputs which will be saved in the folder that you have created in the first place!
 
+### file details
 <table>
   <tr>
     <th>File name</th>
