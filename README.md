@@ -76,10 +76,16 @@ HOM — DMSO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n
 HOM — MC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HOM — MC — H2O  
 HOM — MC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HOM — MC — PTZ  
 
-### Questions to ask:
-1. effect of PTZ
+### Hypotheses:
+1. PTZ creates more seizure (burst count)
 2. effect of PTZ in HOM and Wild Type(WT)
 3. effect of MC (Can MC cancel PTZ's effect)
+
+### Analysis
+1. Take the pre and post difference score, and do a 3-way ANOVA, geno x MC/DMSO x PTZ/H2O, look for significant 3-way interaction.
+2. Separate HOM and WT, and do 3-way ANOVAs: pre/post x MC/DMSO x PTZ/H20
+Look for significant 3-way interaction only in HOM but not in WT
+3. post hoc t tests: compare HOM+MC+PTZ and HOM+DMSO+PTZ, they have a similar value pre, but in the post data, HOM+DMSO+PTZ has a higher value.
 
 ### Procedure Summary: 
 From Raw score for pre and post experiments to various plots, anovas, and an intermdeidate csv file
