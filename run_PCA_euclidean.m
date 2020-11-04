@@ -1,5 +1,13 @@
-filename = 'individualData_07302020_zscore_mean_by_geno.csv';
-main_table = readtable(filename);
+% input, geno x activity file
+% output, graphs, euclidean distance
+function run_PCA_euclidean
+
+[filename,pathname] = uigetfile('*.csv','select the mean_by_geno file');
+main_table = readtable([pathname filename]);
+filename_noext = strsplit(filename,'.');
+filename_noext = filename_noext{1};
+filename_output = [filename_noext '_distance.csv'];
+
 data = main_table{:,2:end};
 
 %data, 52 x 24, geno_by_activity
@@ -51,6 +59,15 @@ fullproj = normdata*fullv(:,1:10);
 % and the vector lengths
 fulllen = sqrt(fullproj(:,1).^2 + fullproj(:,2).^2 + fullproj(:,3).^2+ fullproj(:,4).^2 + fullproj(:,5).^2 + fullproj(:,6).^2+ fullproj(:,7).^2 + fullproj(:,8).^2 + fullproj(:,9).^2+ fullproj(:,10).^2);
 
+euclidean_distances = pdist(fullproj);
+formated_distances = squareform(euclidean_distances);
+distance_table = array2table(formated_distances);
+distance_table.Properties.VariableNames = main_table.genotype;
+
+distance_table = [main_table.genotype, distance_table];
+distance_table.Properties.VariableNames{1} = 'euclidean_distance';
+writetable(distance_table, [pathname filename_output]);
+fprintf('Euclidean distance file generated: %s%s\n', pathname, filename_output);
 
 figure
 hold on
@@ -251,3 +268,5 @@ xlabel('True Distance')
 ylabel('Distance')
 % stevify
 print(gcf,'-depsc2','woods6.eps')
+
+end

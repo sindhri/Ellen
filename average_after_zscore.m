@@ -1,6 +1,10 @@
+%input zscore file, average across fish and date for each geno
+%output two files, 1, geno x activyty, 2, geno x activity summary
+
 %select the file 
 %and set up name for the output file by adding '_averaged' to
 %the filename
+function average_after_zscore
 [filename,pathname] = uigetfile('*.csv','select the zscore file');
 filename_noext = strsplit(filename,'.');
 %remove the '.csv' extention from the original filename
@@ -103,4 +107,6 @@ if ~contains(filename,'burst')
     writetable(final_T,[pathname filename_output]);
 
     fprintf('RMS and Mean zscore file generated: %s%s\n', pathname, filename_output);
+end
+
 end

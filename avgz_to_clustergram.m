@@ -1,3 +1,6 @@
+% input, averaged z score
+% output, clustergram
+function avgz_to_clustergram
 [filename,pathname] = uigetfile('*.csv','select the avg zscore file');
 avgz = readtable([pathname filename]);
 
@@ -17,4 +20,4 @@ cgz = clustergram(data, 'RowLabels', genotypes,...
                              'ImputeFun', @knnimpute)
 cgz.Colormap = my_colormap;           
 cgz.DisplayRange = 3;
-
+end
