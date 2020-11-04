@@ -54,7 +54,7 @@ splitmean ---> calculate_zscore ---> average_after_zscore ---> avgz_to_clustergr
   </tr>
   <tr>
     <td>run_PCA_euclidean.m/td>
-    <td>Run PCA, make plots for publications, and calculate euclidean distances for all the drugs and dosages</td>
+    <td>Input, mean by geno file.<br> Output: graphies for publication, euclidean distance table. <br> Run PCA, make plots for publications, and calculate euclidean distances for all the drugs and dosages</td>
   </tr>
   <tr>
     <td>script_best_recovery_drug.m</td>
