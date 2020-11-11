@@ -1,10 +1,11 @@
+%20201103, include all the controls in the zscore outputs
 %20200619
 %load the data
 %remove NaN
 %take the genotypes (HET + xxx) and (HOM + xxx)
 %normalized by the mean and std of either (WT + DMSO) or (related WT + DMSO) by
 %date
-
+function calculate_zscore
 [filename,pathname] = uigetfile('*.csv','select the zscore file');
 filename_noext = strsplit(filename,'.');
 filename_noext = filename_noext{1};
@@ -94,15 +95,23 @@ WTstdByGenotypePlate = varfun(std_function,table_WT,...
 
 fprintf('Calculate the z-scores based on the control type mean and std by date.\n');
 
-table_analysis = main_table(strcmp(main_table.type,...
-    geno_exp1) | strcmp(main_table.type,geno_exp2),:);
+%table_analysis = main_table(strcmp(main_table.type,...
+%    geno_exp1) | strcmp(main_table.type,geno_exp2),:);
+
+% include all the data
+table_analysis = main_table;
 
 categories = unique(table_analysis.genotype_plate_combined);
 table_transferred = [];
 for i = 1:length(categories)
+
     categories_split = strsplit(categories{i},'__');
     genotype = categories_split{1};
     date = categories_split{2};
+    %skip 2020 data
+    if strcmp(date(1:2),'20')
+        continue;
+    end
     data = table_analysis(strcmp(table_analysis.genotype,...
     genotype) & strcmp(table_analysis.date,date),:);
     WT_mean = WTmeanByGenotypePlate(strcmp(WTmeanByGenotypePlate.date,...
@@ -118,3 +127,4 @@ for i = 1:length(categories)
 end
 writetable(table_transferred,[pathname filename_output]);
 fprintf('zscore file generated: %s%s\n', pathname, filename_output);
+end
