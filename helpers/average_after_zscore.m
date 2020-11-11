@@ -58,7 +58,7 @@ for i = 1:length(MeanByGenotype_trimmed.genotype)
     end
 end
 MeanByGenotype_HOM = MeanByGenotype_trimmed;
-MeanByGenotype_HOM(to_remove_rows_index,:) = [];
+%MeanByGenotype_HOM(to_remove_rows_index,:) = [];
 
 MeanByGenotype_HOM_output = MeanByGenotype_HOM;
 MeanByGenotype_HOM_output(:,2) =[]; 

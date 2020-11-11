@@ -1,3 +1,4 @@
+addpath('helpers/');
 calculate_zscore;
 average_after_zscore;
 avgz_to_clustergram;
