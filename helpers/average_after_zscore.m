@@ -77,8 +77,10 @@ if ~contains(filename,'burst')
     selection(2).name = 'activity';
     selection(3).number = 23:26;
     selection(3).name = 'sleep';
-    selection(4).number = 3:size(MeanByGenotype_HOM,2);
-    selection(4).name = 'all';
+    selection(4).number = [3:14, 23:size(MeanByGenotype_HOM,2)];
+    selection(4).name = 'all_remove_sleep_latency_duration';
+    selection(5).number = 3:size(MeanByGenotype_HOM,2);
+    selection(5).name = 'all';
 
 %allocate a matrics for rms and mean
     n_selection = length(selection);
@@ -101,8 +103,10 @@ if ~contains(filename,'burst')
     T = array2table(matrics_rms_mean,'VariableNames',...
         {['rms_' selection(1).name],['rms_' selection(2).name],...
         ['rms_' selection(3).name],['rms_' selection(4).name],...
+        ['rms_' selection(5).name],...
         ['mean_' selection(1).name],['mean_' selection(2).name],...
-        ['mean_' selection(3).name],['mean_' selection(4).name]});
+        ['mean_' selection(3).name],['mean_' selection(4).name],...
+        ['mean_' selection(5).name]});
     final_T = [MeanByGenotype_HOM(:,1),T];
     writetable(final_T,[pathname filename_output]);
 
