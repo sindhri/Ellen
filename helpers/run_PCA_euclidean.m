@@ -1,3 +1,4 @@
+% 20201203, places the figures in a folder 'fig' in the source file folder
 % input, geno x activity file
 % output, graphs, euclidean distance
 function run_PCA_euclidean
@@ -36,6 +37,11 @@ for i = 1:n_geno
   normdata(i,:) = logdata(i,:)./std(logdata(i,:)); 
 end
 
+fig_dir = [pathname '/fig/'];
+if exist(fig_dir, 'dir') ~=7
+    mkdir(fig_dir);
+end
+
 % a figure describing the raw data
 figure
 load my_colormap;
@@ -43,7 +49,7 @@ imagesc(normdata,[-3 3])
 set(gca,'position',[0 0 1 1],'visible','off')
 set(gcf,'position',[100 100 800 350],'paperposition',[1 1 8 3.5])
 colormap(my_colormap)
-print(gcf,'-depsc2','woods1.eps')
+print(gcf,'-depsc2',[fig_dir 'woods1.eps'])
 % better to annotavte/reshape this in illustrator
 
 
@@ -81,7 +87,7 @@ set(gca,'xlim',[0 10],'ylim',[0 40],'ytick',[0 20 40],'xtick',[],'fontsize',12)
 xlabel('Eigenvector')
 ylabel('% Variance')
 %stevify
-print(gcf,'-depsc2','woods2.eps')
+print(gcf,'-depsc2',[fig_dir 'woods2.eps'])
 
 % Does NOT explain that much of the data? 
 % (83.16% for the first 10 factors, how much is enough
@@ -106,7 +112,7 @@ plot([8 8],[-.8 .8],'k:')
 axis square, box off
 set(gca,'xlim',[0 26],'ylim',[-.8 .8],'visible','off')
 %stevify
-print(gcf,'-depsc2','woods3.eps')
+print(gcf,'-depsc2',[fig_dir 'woods3.eps'])
 % probably good to annotate the interesting peaks with text detailing what they are
 % but that is easier to do in illustrator
 
@@ -214,7 +220,7 @@ set(gca,'xlim',[0 1],'ylim',[0 1], 'fontsize',12,'xtick',[0 .5 1],'ytick',[0 .5 
 xlabel('Similarity of Eigenvectors')
 ylabel('Cumulative Probability')
 % stevify 
-print(gcf,'-depsc2','woods4.eps')
+print(gcf,'-depsc2',[fig_dir 'woods4.eps'])
 
 
 
@@ -238,7 +244,7 @@ set(gca,'xlim',[0 5],'xtick',[0  5],'ylim',[0 1],'ytick',[0 .5 1],'fontsize',12)
 xlabel('Length')
 ylabel('Cumulative Probability')
 %stevify
-print(gcf,'-depsc2','woods5.eps')
+print(gcf,'-depsc2',[fig_dir 'woods5.eps'])
 
 
 
@@ -267,6 +273,6 @@ set(gca,'xlim',[0 10],'ylim',[0 8],'xtick',[0 10],'ytick',[0 8],'fontsize',12)
 xlabel('True Distance')
 ylabel('Distance')
 % stevify
-print(gcf,'-depsc2','woods6.eps')
+print(gcf,'-depsc2',[fig_dir 'woods6.eps'])
 
 end

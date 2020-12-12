@@ -10,7 +10,7 @@ filename_noext = strsplit(filename,'.');
 %remove the '.csv' extention from the original filename
 %so that we can add '_averaged' in it.
 filename_noext = filename_noext{1};
-filename_output = [filename_noext '_averaged.csv'];
+
 filename_output_noaggregration = [filename_noext '_mean_by_geno.csv'];
 
 main_table = readtable([pathname filename]);
@@ -43,30 +43,22 @@ end
 
 MeanByGenotype_trimmed = removevars(MeanByGenotype,to_remove);
 
-%remove HET and keep HOM
-fprintf('Remove rows with HET and keep HOM.\n');
-
-to_remove_rows = cell(1);
-to_remove_rows_index = [];
-m = 1;
-for i = 1:length(MeanByGenotype_trimmed.genotype)
-    current_genotype = MeanByGenotype_trimmed.genotype{i};
-    if(strcmp(current_genotype(1:3),'HET'))
-        to_remove_rows{m} = current_genotype;
-        to_remove_rows_index(m) = i;
-        m = m + 1;
-    end
-end
-MeanByGenotype_HOM = MeanByGenotype_trimmed;
-%MeanByGenotype_HOM(to_remove_rows_index,:) = [];
-
-MeanByGenotype_HOM_output = MeanByGenotype_HOM;
-MeanByGenotype_HOM_output(:,2) =[]; 
 fprintf('mean by geno zscore file generated: %s%s\n', pathname, filename_output_noaggregration);
-writetable(MeanByGenotype_HOM_output,[pathname filename_output_noaggregration]);
-fprintf('Calculating the averages.....\n');
+writetable(MeanByGenotype_trimmed,[pathname filename_output_noaggregration]);
+
+%run RMS separately for HOM and HET
+HOM = get_target_rows_start(MeanByGenotype_trimmed, 'genotype', 'HOM');
+HET = get_target_rows_start(MeanByGenotype_trimmed, 'genotype', 'HET');
+filename_output = [pathname filename_noext '_rms_HOM.csv'];
+make_rms(HOM, filename_output);
+filename_output = [pathname filename_noext '_rms_HET.csv'];
+make_rms(HET, filename_output);
+end
+
+function final_T = make_rms(T, filename_output)
+fprintf('\nCalculating the averages for %s.....\n', filename_output);
 %only export the aggregated file for nonburst zscores
-if ~contains(filename,'burst')
+if ~contains(filename_output,'burst')
 %only select certain columns to caculate rms
 %after replacing Inf in the original 'Individualdata.csv'
 %there are no more Inf columns in MeanByGenotype_HOM
@@ -77,20 +69,20 @@ if ~contains(filename,'burst')
     selection(2).name = 'activity';
     selection(3).number = 23:26;
     selection(3).name = 'sleep';
-    selection(4).number = [3:14, 23:size(MeanByGenotype_HOM,2)];
+    selection(4).number = [3:14, 23:size(T,2)];
     selection(4).name = 'all_remove_sleep_latency_duration';
-    selection(5).number = 3:size(MeanByGenotype_HOM,2);
+    selection(5).number = 3:size(T,2);
     selection(5).name = 'all';
 
 %allocate a matrics for rms and mean
     n_selection = length(selection);
-    matrics_rms_mean = zeros(size(MeanByGenotype_HOM,1),n_selection*2);
+    matrics_rms_mean = zeros(size(T,1),n_selection*2);
 
     for i = 1:n_selection
-        subtable = MeanByGenotype_HOM(:,selection(i).number);
+        subtable = T(:,selection(i).number);
         fprintf('selection %d %s columns: \n',i, selection(i).name);
         for j = 1:length(selection(i).number)
-            fprintf('%s\n', MeanByGenotype_HOM.Properties.VariableNames{selection(i).number(j)});
+            fprintf('%s\n', T.Properties.VariableNames{selection(i).number(j)});
         end
         fprintf('\n');
         matrics = subtable{:,:};
@@ -100,17 +92,16 @@ if ~contains(filename,'burst')
 
 %add the variable names to the output
 %and add the genotype to the table
-    T = array2table(matrics_rms_mean,'VariableNames',...
+    T_output = array2table(matrics_rms_mean,'VariableNames',...
         {['rms_' selection(1).name],['rms_' selection(2).name],...
         ['rms_' selection(3).name],['rms_' selection(4).name],...
         ['rms_' selection(5).name],...
         ['mean_' selection(1).name],['mean_' selection(2).name],...
         ['mean_' selection(3).name],['mean_' selection(4).name],...
         ['mean_' selection(5).name]});
-    final_T = [MeanByGenotype_HOM(:,1),T];
-    writetable(final_T,[pathname filename_output]);
+    final_T = [T(:,1),T_output];
+    writetable(final_T, filename_output);
 
-    fprintf('RMS and Mean zscore file generated: %s%s\n', pathname, filename_output);
+    fprintf('RMS and Mean zscore file generated: %s\n', filename_output);
 end
-
 end

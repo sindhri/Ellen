@@ -1,6 +1,0 @@
-Each upload file is the observations of fish over a period of time.
-Observation happens once per minute for each fish.
-For example, if there are n fish, usually n = 96, but I also have seen n = 92.
-The very first n rows are for the very first 60 seconds of observations, 1 row for each fish.
-The number of observations can be calculated by the total time /60 seconds, or the total rows of the file/n of fish.
-Each column is a parameter measured from the fish.
