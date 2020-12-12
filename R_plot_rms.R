@@ -6,7 +6,7 @@ pathname <- 'drug_discovery_1210/'
 pathname_fig <- paste0(pathname, 'fig/')
 
 # Make a directory if the subfolder 'fig' does not exist
-if (!dir.exist(pathname_fig)) {
+if (!dir.exists(pathname_fig)) {
   mkdir(pathname_fig)
 }
 
