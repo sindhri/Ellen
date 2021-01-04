@@ -1,3 +1,4 @@
+% 20210103, closed all the figures at the end
 % 20201203, places the figures in a folder 'fig' in the source file folder
 % input, geno x activity file
 % output, graphs, euclidean distance
@@ -275,4 +276,5 @@ ylabel('Distance')
 % stevify
 print(gcf,'-depsc2',[fig_dir 'woods6.eps'])
 
+close all;
 end

@@ -1,6 +1,7 @@
 % input, averaged z score
 % output, clustergram
 
+%todo, colorbar, verify values, burst data
 % 20201211, 
 % separate HOM and HET into its own clustergrams
 

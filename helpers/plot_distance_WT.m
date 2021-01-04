@@ -1,3 +1,5 @@
+%20210103, fixed a bug of overlapping figures when run right after the last
+%a script that has a figure open
 function plot_distance_WT
 
 [filename,pathname] = uigetfile('*.csv','select the distance file');
@@ -58,6 +60,7 @@ title_name = [target_geno '_to_' control_geno];
     limit = length(distance);
 %end
 
+figure;
 barh(distance(1:limit));
 yticklabels(labels(1:limit));
 yticks(1:limit);
