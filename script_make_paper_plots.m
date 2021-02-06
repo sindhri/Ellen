@@ -4,4 +4,6 @@
 % then the final time-series plots will be in the same folder as the combined files
 
 addpath('helpers/');
-plot_time_series;
+plot_time_series('avewaking');
+% only del5 has tenminute. need to fix bugs
+plot_time_series('tenminute');
