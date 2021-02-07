@@ -65,7 +65,7 @@ ggplot(data = HOM_plot, aes(x=activity, y = zscore, group=geno,color = geno)) +
   geom_line()+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-  ggsave('HOM.png', height = 7 , width = 20)
+  ggsave(paste0(pathname,'HOM.png'), height = 7 , width = 20)
 
 HOM_HET_plot <- prepare_plot_data(data)
 
@@ -73,4 +73,4 @@ ggplot(data = HOM_HET_plot, aes(x=activity, y = zscore, group=geno,color = geno)
   geom_line()+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-  ggsave('HOM_HET.png', height = 7 , width = 20)
+  ggsave(paste0(pathname,'HOM_HET.png'), height = 7 , width = 20)
