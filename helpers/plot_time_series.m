@@ -62,17 +62,17 @@ end
 
 if size(data,2)==3
     if ~isempty(zoomin)
-        color_lib = {[0, 0, 1],[1, 0, 0],[1,165/255,0]};
+        color_lib = {[0, 0, 1],[0, 1, 0],[1, 0, 0]};
     else
-        color_lib = {[0, 0, 1],[1, 0, 0],[1,165/255,0]};
+        color_lib = {[0, 0, 1],[0, 1, 0],[1, 0, 0]};
 %        color_lib = {[201,229,248]/255, ...
 %            [255,222,220]/255, [235,201,129]/255};
     end
 else
     if ~isempty(zoomin)
-        color_lib = {[0, 0, 1],[1, 0, 0],[1, 165/255,0],[0, 1, 0]};
+        color_lib = {[0, 0, 1],[0, 1, 0],[1, 165/255,0],[1, 0, 0]};
     else
-        color_lib = {[0, 0, 1],[1, 0, 0],[1, 165/255,0],[0, 1, 0]};
+        color_lib = {[0, 0, 1],[0, 1, 0],[1, 165/255,0],[1, 0, 0]};
 %        color_lib = {[211/255,223/255,242/255], ...
 %            [242/255,204/255,196/255], [241/255,242/255,196/255],...
 %            [242/255,235/255,196/255]};
@@ -85,9 +85,9 @@ set(gcf, 'PaperSize', [10 5]);
 p = [];
 for i = 1:size(data,2)
     y = data(:,i)'; %important to transpose!
-    if ~isempty(zoomin)
+%    if ~isempty(zoomin)
         y = movmean(y, 50);
-    end
+%    end
     x = times;
     std_dev = data_std(:,i)';
     curve1 = y + std_dev;
