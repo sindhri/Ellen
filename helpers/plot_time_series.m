@@ -28,12 +28,8 @@ end
 
 if strcmp(geno, 'transhet')~=1
     type_names = {'wt', 'het', 'hom'};
-%    color_lib = {'b','g','r'};
-    color_lib = {'b','r',[1,165/255,0]};
 else
     type_names = {'wt', 'het_del44', 'het_del5', 'hom'};
-%    color_lib = {'b','g','y','r'}; 
-    color_lib = {'b','r','y','g'}; 
 end
 
 data = eval([geno '_' parameter_name '_wt']);
@@ -46,21 +42,41 @@ for i = 1:length(type_names)
     data_sem(:,i) = std(data,0, 2,'omitnan')/sqrt(size(data,2));            
 end
     make_one_plot(geno, data_mean, times, data_sem,...
-        color_lib, pathname, type_names, parameter_name);
+        pathname, type_names, parameter_name);
     zoomin = length(times)-600:length(times);
     make_one_plot(geno, data_mean, times, data_sem,...
-        color_lib, pathname, type_names, parameter_name, zoomin);
+        pathname, type_names, parameter_name, zoomin);
 end
 
 function make_one_plot(geno, data, times, data_std, ...
-    color_lib, pathname, legend_names, parameter_name, zoomin)
-if nargin==9
+    pathname, legend_names, parameter_name, zoomin)
+if nargin==8
     data = data(zoomin,:);
     times = times(zoomin);
     data_std = data_std(zoomin,:);
     title_name = [geno '_' parameter_name ' zoomed in'];
 else
+    zoomin = '';
     title_name = [geno '_' parameter_name];
+end
+
+if size(data,2)==3
+    if ~isempty(zoomin)
+        color_lib = {[0, 0, 1],[1, 0, 0],[1,165/255,0]};
+    else
+        color_lib = {[0, 0, 1],[1, 0, 0],[1,165/255,0]};
+%        color_lib = {[201,229,248]/255, ...
+%            [255,222,220]/255, [235,201,129]/255};
+    end
+else
+    if ~isempty(zoomin)
+        color_lib = {[0, 0, 1],[1, 0, 0],[1, 165/255,0],[0, 1, 0]};
+    else
+        color_lib = {[0, 0, 1],[1, 0, 0],[1, 165/255,0],[0, 1, 0]};
+%        color_lib = {[211/255,223/255,242/255], ...
+%            [242/255,204/255,196/255], [241/255,242/255,196/255],...
+%            [242/255,235/255,196/255]};
+    end
 end
 figure;
 set(gcf, 'PaperPosition', [0 0 10 5]); %Position plot at left hand corner with width 5 and height 5.
@@ -68,14 +84,17 @@ set(gcf, 'PaperSize', [10 5]);
 
 p = [];
 for i = 1:size(data,2)
-    y = data(:,i);
+    y = data(:,i)'; %important to transpose!
+    if ~isempty(zoomin)
+        y = movmean(y, 50);
+    end
     x = times;
-    std_dev = data_std(:,i);
+    std_dev = data_std(:,i)';
     curve1 = y + std_dev;
     curve2 = y - std_dev;
     x2 = [x, fliplr(x)];
-    inBetween = [curve1; fliplr(curve2)];
-    fill(x2, inBetween, color_lib{i}, 'edgecolor','none');
+    inBetween = [curve1, fliplr(curve2)];
+    fill(x2, inBetween, color_lib{i}, 'facealpha',0.1, 'edgecolor', color_lib{i});
     hold on;
     p(i) = plot(x, y, 'color',color_lib{i}, 'LineWidth', 1);
 end
