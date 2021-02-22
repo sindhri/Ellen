@@ -26,23 +26,28 @@ prepare_plot_data <- function(data){
   return(data_t_longer)
 }
 
-my_color_palette <-function(){
-  color_min <- rgb(0,1,1,1)
-  color_min2 <- rgb(0,1,1,0.8)
-  color_min3 <- rgb(0,1,1,0.6)
-  color_min4 <- rgb(0,1,1,0.4)
-  color_min5 <- rgb(0,1,1,0.2)
-  color_mid <- rgb(1,244/255,226/255,1)
-  color_max5 <- rgb(1,76/255,254/255,0.2)
-  color_max4 <- rgb(1,76/255,254/255,0.4)
-  color_max3 <- rgb(1,76/255,254/255,0.6)
-  color_max2 <- rgb(1,76/255,254/255,0.8)
-  color_max <- rgb(1,76/255,254/255,1)
-  return(c(color_min, color_min2, color_min3, color_min4, color_min5,
-           color_mid, color_mid,
-           color_max5, color_max4, color_max3, color_max2, color_max))
+my_color_palette <- function(total){
+  n = total/2
+ for(i in 1:(n-1)){
+   print(i)
+   if(i==1){
+     my_color <- rgb(0,1,1,1)
+   }
+   else{
+     next_color <- rgb(0,1,1,1-i/n)
+     my_color <- c(my_color, next_color)
+   }
+ }
+  # cream color in the middle
+  my_color[n] <- rgb(1,244/255,226/255,1)
+  my_color[n+1] <- rgb(1,244/255,226/255,1)
+  
+  for(i in 2:n){
+    next_color <- rgb(1,76/255,254/255,i/n)
+    my_color <- c(my_color, next_color)
+  }
+  return(my_color)
 }
-
 # select the zscore files
 fname <- file.choose()
 filename <- basename(fname)
@@ -98,17 +103,19 @@ data2 <- data.frame(data[,2:ncol(data)])
 rownames(data2) <- data$genotype
 # used the pink blue color platter, pink is max and blux is min
 png(file=paste0(pathname, "heatmap_HOM_HET.png"), width=1400, height=800, pointsize = 20)
-heatmap.2(as.matrix(data2), col=my_color_palette(), 
+heatmap.2(as.matrix(data2), col=my_color_palette(24), 
           density.info="none",trace="none", 
-          keysize = 1,key.title = " ",key.xlab = " ", breaks=seq(-3,3,0.5),
+          keysize = 1,key.title = " ",key.xlab = " ", breaks=seq(-3,3,0.25),
           margins =c(12,9))
 dev.off()
 
 HOM_data2 <- data.frame(HOM_data[,2:ncol(HOM_data)])
 rownames(HOM_data2) <- HOM_data$genotype
-png(file=paste0(pathname, "heatmap_HOM.png"), width=1200, height=600)
-heatmap.2(as.matrix(HOM_data2), col=my_color_palette(), 
+png(file=paste0(pathname, "heatmap_HOM.png"), width=1200, height=480)
+# This was used to make a regular looking scale, because the compressed version the scale was compressed into one line
+#png(file=paste0(pathname, "heatmap_HOM.png"), width=1200, height=600)
+heatmap.2(as.matrix(HOM_data2), col=my_color_palette(24), 
           density.info="none",trace="none", 
-          keysize = 0.75, key.title = " ",key.xlab = " ",breaks=seq(-3,3,0.5),
-          margins =c(12,9))
+          keysize = 0.75, key.title = " ",key.xlab = " ", breaks=seq(-3,3,0.25),
+          margins =c(12,8))
 dev.off()
