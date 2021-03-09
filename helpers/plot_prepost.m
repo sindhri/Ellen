@@ -5,8 +5,10 @@ function plot_prepost(output)
     ncolumn_to_skip = 2; %skip geno, GroupCount
     activity_names = output.pre_geno_mean.Properties.VariableNames(ncolumn_to_skip+1:end);
 
-    color_lab = {[1,0,0],[0,0,0.5],[1,0.4,0],[1,1,0],...
-        [0.4,0.4,1],[0.4,1,0.4],[1,0,1],[0,1,1]};
+    %color_lab = {[1,0,0],[0,0,0.5],[1,0.4,0],[1,1,0],...
+    %    [0.4,0.4,1],[0.4,1,0.4],[1,0,1],[0,1,1]};
+    color_lab = {[1,0,0],[0,0,0.5],[0.88,0.68,0],[1,0,0],...
+        [0.4,0.4,1],[0.4,1,0.4],[0,1,1],[0,0,1]};
     location_lab = repmat({'northwest'},[length(output.parameters),1]);
     % in a couple special cases put the legend in the bottom left corner
     location_lab{2} = 'southwest';
