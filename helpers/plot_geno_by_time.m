@@ -91,7 +91,7 @@ function h = plot_m_std(m_pre, std_pre, m_post, std_post, the_color)
     x2_pre = [x1_pre, fliplr(x1_pre)];
     inBetween = [curve1_pre, fliplr(curve2_pre)];
     h = fill(x2_pre, inBetween, the_color);
-    set(h,'facealpha',0.9);
+    set(h,'facealpha',0.8);
     plot(x1_pre, m_pre, 'Color', the_color, 'LineWidth', 2);
     
     x1_post = length(m_pre)+1:length(m_pre)*2;
@@ -100,6 +100,6 @@ function h = plot_m_std(m_pre, std_pre, m_post, std_post, the_color)
     x2_post = [x1_post, fliplr(x1_post)];
     inBetween = [curve1_post, fliplr(curve2_post)];
     h = fill(x2_post, inBetween, the_color);
-    set(h,'facealpha',.9);
+    set(h,'facealpha',.8);
     plot(x1_post, m_post, 'Color', the_color, 'LineWidth', 2);
 end
