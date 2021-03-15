@@ -1,8 +1,16 @@
+%202103, removed separate control for 'related WT' because it was changed
+%to 'WT' while creating z scores
 %20210103, fixed a bug of overlapping figures when run right after the last
 %a script that has a figure open
 function plot_distance_WT
 
-[filename,pathname] = uigetfile('*.csv','select the distance file');
+if nargin==0
+    [filename,pathname] = uigetfile('*.csv','select the distance file');
+end
+
+filename_noext = strsplit(filename,'.');
+filename_noext = filename_noext{1};
+
 main_table = readtable([pathname filename]);
 
 fig_dir = [pathname '/fig/'];
@@ -10,7 +18,7 @@ if exist(fig_dir, 'dir') ~=7
     mkdir(fig_dir);
 end
 
-control_genos_original = {'WT + DMSO', 'related WT + DMSO'};
+control_genos_original = {'WT + DMSO'};
 % clean up to match the format of matlab columns
 control_genos_cleaned = regexprep(control_genos_original, '_', '');
 control_genos_cleaned = regexprep(control_genos_cleaned, ' ', '');
@@ -31,7 +39,7 @@ for i = 1:length(control_genos_cleaned)
     % take only the target rows
     target_geno = 'HOM';
     table1 = get_target_rows(table_sorted, target_geno);
-    writetable(table1,[pathname target_geno '_' control_geno '.csv']);
+    writetable(table1,[pathname  filename_noext '_compare_' target_geno '_' control_geno '.csv']);
     plot_distance_bar(table1.distance, table1.label,...
         fig_dir, control_geno, target_geno);
     
@@ -42,7 +50,7 @@ for i = 1:length(control_genos_cleaned)
     target_geno = temp2{1}; % WT or related WT
     table2 = get_target_rows(table_sorted, target_geno);
     table2 = sortrows(table2, 'distance', 'descend');
-    writetable(table2,[pathname target_geno '_' control_geno '.csv']);
+    writetable(table2,[pathname filename_noext '_compare_' target_geno '_' control_geno '.csv']);
 
     plot_distance_bar(table2.distance, table2.label,...
         fig_dir, control_geno, target_geno);
@@ -72,7 +80,7 @@ set(gcf, 'PaperPosition', [0 0 6 10]); %Position plot at left hand corner with w
 set(gcf, 'PaperSize', [6 10]); 
 set(gca,'Ydir','reverse', 'fontsize', 12, ...
     'xaxisLocation','top', 'TickLabelInterpreter', 'none');
-saveas(gcf,[fig_dir target_geno '_to_' control_geno],'pdf');
+saveas(gcf,[fig_dir 'bar_' target_geno '_to_' control_geno],'pdf');
 close(gcf);
 
 end

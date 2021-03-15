@@ -10,7 +10,8 @@ filename_noext = strsplit(filename,'.');
 filename_noext = filename_noext{1};
 filename_output = [filename_noext '_distance.csv'];
 
-data = main_table{:,2:end};
+%skip the first two columns, genotype and GroupCount
+data = main_table{:,3:end}; 
 
 %data, 52 x 24, geno_by_activity
 %original program 1st dimension is 120, so it is likely to be geno instead

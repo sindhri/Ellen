@@ -1,3 +1,7 @@
+%20210314, modified calculate_zscore. It will select a subgroup of the
+%whole file, with the genotype starging with the input geno_name, then use
+%geno_name + DMSO as the control
+
 %202103, change Biochanin A to Biochanin-A, related WT to WT
 %20201103, include all the controls in the zscore outputs
 %20200619
@@ -12,11 +16,13 @@
 % because original data has HOm_del44 and WT/HET types 
 % with experiment date 200912, and they were not recognized in the zscore
 % step
-function calculate_zscore
-[filename,pathname] = uigetfile('*.csv','select the zscore file');
+function [pathname, filename, filename_output] = calculate_zscore_subgroup(geno_name, pathname, filename)
+if nargin==1
+    [filename,pathname] = uigetfile('*.csv','select the raw data file');
+end
 filename_noext = strsplit(filename,'.');
 filename_noext = filename_noext{1};
-filename_output = [filename_noext '_zscore.csv'];
+filename_output = [filename_noext '_zscore_' geno_name '.csv'];
 
 fprintf('Reading file: %s%s\n', pathname, filename);
 
@@ -36,6 +42,10 @@ else
     main_table.Properties.VariableNames(1) = {'plate'};
 end
 parameter_start_column = 4;
+
+% Only take the rows that starts with geno_name
+fprintf('picking the rows whose genotype starts with %s\n', geno_name);
+main_table = main_table(contains(main_table.genotype, geno_name),:);
 
 %replace Inf with Nan
 fprintf('replacing Inf with Nan, will take a minute .....\n');
@@ -78,16 +88,11 @@ main_table.genotype_plate_combined = strcat(main_table.genotype,...
 parameters = main_table.Properties.VariableNames(parameter_start_column:end-3);
 
 %find the WT and 
-geno_control1 = 'WT + DMSO';
-geno_control2 = 'related WT + DMSO';
-geno_exp1 = 'HET';
-geno_exp2 = 'HOM';
+geno_control = [geno_name ' + DMSO'];
 
 fprintf('Calculate the mean and std for the control types.\n');
 
-table_WT = main_table(strcmp(main_table.genotype,...
-    geno_control1) | strcmp(main_table.genotype,geno_control2),:);
-
+table_WT = main_table(strcmp(main_table.genotype,geno_control),:);
 
 mean_function = @(x) mean(x,'omitnan');
 std_function = @(x) std(x,'omitnan');
@@ -104,10 +109,6 @@ WTstdByGenotypePlate = varfun(std_function,table_WT,...
 
 fprintf('Calculate the z-scores based on the control type mean and std by date.\n');
 
-%table_analysis = main_table(strcmp(main_table.type,...
-%    geno_exp1) | strcmp(main_table.type,geno_exp2),:);
-
-% include all the data
 table_analysis = main_table;
 
 categories = unique(table_analysis.genotype_plate_combined);

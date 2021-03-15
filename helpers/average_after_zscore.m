@@ -4,14 +4,16 @@
 %select the file 
 %and set up name for the output file by adding '_averaged' to
 %the filename
-function average_after_zscore
-[filename,pathname] = uigetfile('*.csv','select the zscore file');
+function [mean_by_geno, output_rms] = average_after_zscore(pathname, filename)
+if nargin==0
+    [filename,pathname] = uigetfile('*.csv','select the zscore file');
+end
 filename_noext = strsplit(filename,'.');
 %remove the '.csv' extention from the original filename
 %so that we can add '_averaged' in it.
 filename_noext = filename_noext{1};
 
-filename_output_noaggregration = [filename_noext '_mean_by_geno.csv'];
+mean_by_geno = [filename_noext '_mean_by_geno.csv'];
 
 main_table = readtable([pathname filename]);
 fprintf('Reading file: %s%s\n', pathname, filename);
@@ -43,16 +45,19 @@ end
 
 MeanByGenotype_trimmed = removevars(MeanByGenotype,to_remove);
 
-fprintf('mean by geno zscore file generated: %s%s\n', pathname, filename_output_noaggregration);
-writetable(MeanByGenotype_trimmed,[pathname filename_output_noaggregration]);
+fprintf('mean by geno zscore file generated: %s%s\n', pathname, mean_by_geno);
+writetable(MeanByGenotype_trimmed,[pathname mean_by_geno]);
 
 %run RMS separately for HOM and HET
 HOM = get_target_rows_start(MeanByGenotype_trimmed, 'genotype', 'HOM');
 HET = get_target_rows_start(MeanByGenotype_trimmed, 'genotype', 'HET');
-filename_output = [pathname filename_noext '_rms_HOM.csv'];
-make_rms(HOM, filename_output);
-filename_output = [pathname filename_noext '_rms_HET.csv'];
-make_rms(HET, filename_output);
+WT = get_target_rows_start(MeanByGenotype_trimmed, 'genotype', 'WT');
+output_rms = [pathname filename_noext '_rms_HOM.csv'];
+make_rms(HOM, output_rms);
+output_rms = [pathname filename_noext '_rms_HET.csv'];
+make_rms(HET, output_rms);
+output_rms = [pathname filename_noext '_rms_WT.csv'];
+make_rms(WT, output_rms);
 end
 
 function final_T = make_rms(T, filename_output)
