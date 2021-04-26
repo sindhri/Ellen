@@ -16,6 +16,10 @@ avgz = readtable([pathname filename]);
 HOM_avgz = get_target_rows_start(avgz, 'genotype', 'HOM');
 HET_avgz = get_target_rows_start(avgz, 'genotype', 'HET');
 
+% REMOVE HOM_DMSO and HET_DMSO
+HOM_avgz = HOM_avgz(strcmp(HOM_avgz.genotype, 'HOM + DMSO') ~=1,:);
+HET_avgz = HET_avgz(strcmp(HET_avgz.genotype, 'HET + DMSO') ~=1,:);
+
 fig_dir = [pathname '/fig/'];
 if exist(fig_dir, 'dir') ~=7
     mkdir(fig_dir);
@@ -28,10 +32,11 @@ end
 
 function make_clustergram(avgz, pathname, filename)
 
-data = avgz{:,2:end};
+%3, removed 'group_count' from the parameters
+column_start = 3;
+data = avgz{:,column_start:end};
 genotypes = avgz{:,1};
-parameters = avgz.Properties.VariableNames(2:end);
-
+parameters = avgz.Properties.VariableNames(column_start:end); 
 %replaced underscore with space in the row and column names
 genotypes = strrep(genotypes,'_', ' ');
 parameters = strrep(parameters,'_', ' ');
