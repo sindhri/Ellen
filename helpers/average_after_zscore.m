@@ -4,7 +4,7 @@
 %select the file 
 %and set up name for the output file by adding '_averaged' to
 %the filename
-function [mean_by_geno, output_rms] = average_after_zscore(pathname, filename)
+function mean_by_geno = average_after_zscore(pathname, filename)
 if nargin==0
     [filename,pathname] = uigetfile('*.csv','select the zscore file');
 end

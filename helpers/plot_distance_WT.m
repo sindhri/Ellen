@@ -2,7 +2,7 @@
 %to 'WT' while creating z scores
 %20210103, fixed a bug of overlapping figures when run right after the last
 %a script that has a figure open
-function plot_distance_WT
+function plot_distance_WT(pathname, filename)
 
 if nargin==0
     [filename,pathname] = uigetfile('*.csv','select the distance file');
@@ -60,19 +60,19 @@ end
 function plot_distance_bar(distance, labels, ...
     fig_dir, control_geno, target_geno)
 
-%limit = 100;
+limit = 100;
 title_name = [target_geno '_to_' control_geno];
-%if length(distance) > limit
-%    title_name = ['top ' int2str(limit) ' ' title_name];
-%else
+if length(distance) > limit
+    title_name = ['top ' int2str(limit) ' ' title_name];
+else
     limit = length(distance);
-%end
+end
 
 figure;
 barh(distance(1:limit));
 yticklabels(labels(1:limit));
 yticks(1:limit);
-xticks(1:max(distance(1:limit)));
+xticks(0:5:max(distance(1:limit)));
 
 title(title_name, 'interpreter', 'none', 'fontsize', 15);
 

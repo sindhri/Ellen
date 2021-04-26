@@ -1,11 +1,20 @@
+% 20210402, put the normalization back
+% 20210326, pick onlly HOMM and WT
+% 20200325, removed the normalization step, added optional inputs
 % 20210103, closed all the figures at the end
 % 20201203, places the figures in a folder 'fig' in the source file folder
 % input, geno x activity file
 % output, graphs, euclidean distance
-function run_PCA_euclidean
+function run_PCA_euclidean(pathname, filename)
 
-[filename,pathname] = uigetfile('*.csv','select the mean_by_geno file');
+if nargin==0
+    [filename,pathname] = uigetfile('*.csv','select the mean_by_geno file');
+end
 main_table = readtable([pathname filename]);
+
+%only use HOM and WT
+main_table = main_table(contains(main_table.genotype, 'HOM') | contains(main_table.genotype, 'WT'),:);
+
 filename_noext = strsplit(filename,'.');
 filename_noext = filename_noext{1};
 filename_output = [filename_noext '_distance.csv'];
@@ -38,6 +47,7 @@ for i = 1:n_geno
   logdata(i,:) = data(i,:)-mean(data(i,:)); % make sure there is no DC offset)
   normdata(i,:) = logdata(i,:)./std(logdata(i,:)); 
 end
+
 
 fig_dir = [pathname '/fig/'];
 if exist(fig_dir, 'dir') ~=7
@@ -85,7 +95,7 @@ plot(3,tmp(3),'b.','markersize',18)
 plot(4:length(tmp),tmp(4:end),'k.','markersize',18)
 plot([0 10],[10 10],'k:')
 axis square,box off
-set(gca,'xlim',[0 10],'ylim',[0 40],'ytick',[0 20 40],'xtick',[],'fontsize',12)
+set(gca,'xlim',[0 10],'ylim',[0 60],'ytick',[0 20 40],'xtick',[],'fontsize',12)
 xlabel('Eigenvector')
 ylabel('% Variance')
 %stevify

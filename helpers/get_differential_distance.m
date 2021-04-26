@@ -1,4 +1,4 @@
-function get_differential_distance(pathname, distance_file)
+function filename_output = get_differential_distance(pathname, distance_file)
 if nargin==0
     [distance_file, pathname] = uigetfile('*.csv','select the distance file');    
 end

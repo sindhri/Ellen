@@ -1,3 +1,4 @@
+%20210325, added optional inputs
 % input, averaged z score
 % output, clustergram
 
@@ -5,9 +6,10 @@
 % 20201211, 
 % separate HOM and HET into its own clustergrams
 
-function avgz_to_clustergram
-
-[filename,pathname] = uigetfile('*.csv','select the avg zscore file');
+function avgz_to_clustergram(pathname, filename)
+if nargin==0
+    [filename,pathname] = uigetfile('*.csv','select the mean_by_geno file');
+end
 avgz = readtable([pathname filename]);
 
 % choose only the rows starting with 'HOM' or 'HET'

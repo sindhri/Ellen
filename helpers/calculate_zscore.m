@@ -1,3 +1,4 @@
+%20210325, added output so it's easier to pass them to the next step
 %202103, change Biochanin A to Biochanin-A, related WT to WT
 %20201103, include all the controls in the zscore outputs
 %20200619
@@ -12,7 +13,7 @@
 % because original data has HOm_del44 and WT/HET types 
 % with experiment date 200912, and they were not recognized in the zscore
 % step
-function calculate_zscore
+function [pathname, zscore_file] = calculate_zscore
 [filename,pathname] = uigetfile('*.csv','select the zscore file');
 filename_noext = strsplit(filename,'.');
 filename_noext = filename_noext{1};
@@ -136,4 +137,5 @@ for i = 1:length(categories)
 end
 writetable(table_transferred,[pathname filename_output]);
 fprintf('zscore file generated: %s%s\n', pathname, filename_output);
+zscore_file = filename_output;
 end
