@@ -111,7 +111,14 @@ dev.off()
 
 HOM_data2 <- data.frame(HOM_data[,2:ncol(HOM_data)])
 rownames(HOM_data2) <- HOM_data$genotype
-png(file=paste0(pathname, "heatmap_HOM.png"), width=1200, height=480)
+#original
+#png(file=paste0(pathname, "heatmap_HOM.png"), width=1200, height=480)
+
+#based on how Ellen wants to stretch it
+#png(file=paste0(pathname, "heatmap_HOM.png"), width=2430, height=513)
+setEPS()
+postscript("heatmap_HOM.eps",width=2430, height=513)
+
 # This was used to make a regular looking scale, because the compressed version the scale was compressed into one line
 #png(file=paste0(pathname, "heatmap_HOM.png"), width=1200, height=600)
 heatmap.2(as.matrix(HOM_data2), col=my_color_palette(24), 

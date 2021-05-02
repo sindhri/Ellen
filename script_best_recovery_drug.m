@@ -6,5 +6,8 @@ addpath('helpers/');
 mean_by_geno_file = average_after_zscore(pathname, zscore_file);
 avgz_to_clustergram(pathname, mean_by_geno_file);
 run_PCA_euclidean(pathname, mean_by_geno_file);
-distance_file = get_euclidean_distance(pathname, mean_by_geno_file);
+
+% no need to run this one, this will generate distance between all geno
+% pairs, no pre-selection
+%distance_file = get_euclidean_distance(pathname, mean_by_geno_file);
 plot_distance_WT(pathname, distance_file);

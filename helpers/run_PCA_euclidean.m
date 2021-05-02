@@ -1,3 +1,5 @@
+% 20200430, changed PCA to only include HOM + drugs and WT+DMSO
+% changed 24 to nparams, able to limit sleep latency and length
 % 20210402, put the normalization back
 % 20210326, pick onlly HOMM and WT
 % 20200325, removed the normalization step, added optional inputs
@@ -12,9 +14,24 @@ if nargin==0
 end
 main_table = readtable([pathname filename]);
 
-%only use HOM and WT
-main_table = main_table(contains(main_table.genotype, 'HOM') | contains(main_table.genotype, 'WT'),:);
+%only use HOM
+%main_table = main_table(contains(main_table.genotype, 'HOM') | contains(main_table.genotype, 'WT'),:);
+main_table = main_table(contains(main_table.genotype, 'HOM') | contains(main_table.genotype, 'WT + DMSO'),:);
+parameters = main_table.Properties.VariableNames;
+nparams = length(parameters)-2;%exclude genotype and GroupCount
+% remove sleep latency and sleep length in the parameters
 
+remove_sleep_latency_length = 0;
+
+if remove_sleep_latency_length == 1
+    for i = 3:length(parameters) %skip genotype and GroupCount
+        param = parameters(i);
+        if contains(param, 'sleepLatency') || contains(param, 'sleepLength')
+            main_table = removevars(main_table, param);
+            nparams = nparams - 1;
+        end
+    end
+end
 filename_noext = strsplit(filename,'.');
 filename_noext = filename_noext{1};
 filename_output = [filename_noext '_distance.csv'];
@@ -22,7 +39,7 @@ filename_output = [filename_noext '_distance.csv'];
 %skip the first two columns, genotype and GroupCount
 data = main_table{:,3:end}; 
 
-%data, 52 x 24, geno_by_activity
+%data, 52 x nparams, geno_by_activity
 %original program 1st dimension is 120, so it is likely to be geno instead
 %of activity
 %which way makes more sense? to normalize across geno, or activity?
@@ -116,9 +133,9 @@ hold on
 %plot(fullv(order,10),'r','linewidth',2);
 %plot(fullv(order,11),'g','linewidth',2);
 %plot(fullv(order,12),'b','linewidth',2);
-plot(fullv(1:24,10),'r','linewidth',2);
-plot(fullv(1:24,11),'g','linewidth',2);
-plot(fullv(1:24,12),'b','linewidth',2);
+plot(fullv(1:nparams,10),'r','linewidth',2);
+plot(fullv(1:nparams,11),'g','linewidth',2);
+plot(fullv(1:nparams,12),'b','linewidth',2);
 plot([0 26],[0 0],'k:')
 plot([8 8],[-.8 .8],'k:')
 axis square, box off
@@ -171,7 +188,7 @@ end
 
 
 % Jia: not sure what is it trying to do. 
-% we have 24 activities so this will do nothing to our results
+% we have nparams activities so this will do nothing to our results
 
 % on the fourth run, eigenvectors 2 and 3 end up switched. so we'll
 % fix that manually
