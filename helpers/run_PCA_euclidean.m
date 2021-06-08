@@ -1,3 +1,9 @@
+% 20210524, added target_geno, so the code can be used to generate either
+% HOM or HET distance, compared to WT+DMSO
+% added target_geno and whether to exclude sleep latency and length into
+% filename
+% organize results in subfolders
+% refactorized
 % 20200430, changed PCA to only include HOM + drugs and WT+DMSO
 % changed 24 to nparams, able to limit sleep latency and length
 % 20210402, put the normalization back
@@ -7,23 +13,23 @@
 % 20201203, places the figures in a folder 'fig' in the source file folder
 % input, geno x activity file
 % output, graphs, euclidean distance
-function run_PCA_euclidean(pathname, filename)
+function filename_output = run_PCA_euclidean(target_geno, pathname, filename, remove_sleep_latency_length)
 
-if nargin==0
+if nargin==1
     [filename,pathname] = uigetfile('*.csv','select the mean_by_geno file');
+    remove_sleep_latency_length = 0;
 end
 main_table = readtable([pathname filename]);
 
 %only use HOM
 %main_table = main_table(contains(main_table.genotype, 'HOM') | contains(main_table.genotype, 'WT'),:);
-main_table = main_table(contains(main_table.genotype, 'HOM') | contains(main_table.genotype, 'WT + DMSO'),:);
+main_table = main_table(contains(main_table.genotype, target_geno) | contains(main_table.genotype, 'WT + DMSO'),:);
 parameters = main_table.Properties.VariableNames;
 nparams = length(parameters)-2;%exclude genotype and GroupCount
 % remove sleep latency and sleep length in the parameters
 
-remove_sleep_latency_length = 0;
-
 if remove_sleep_latency_length == 1
+    subfolder_name = [target_geno '_sleep_LL_excluded'];
     for i = 3:length(parameters) %skip genotype and GroupCount
         param = parameters(i);
         if contains(param, 'sleepLatency') || contains(param, 'sleepLength')
@@ -31,10 +37,12 @@ if remove_sleep_latency_length == 1
             nparams = nparams - 1;
         end
     end
+else
+    subfolder_name = [target_geno '_all_params'];
 end
 filename_noext = strsplit(filename,'.');
 filename_noext = filename_noext{1};
-filename_output = [filename_noext '_distance.csv'];
+filename_output = [filename_noext '_distance_' subfolder_name '.csv'];
 
 %skip the first two columns, genotype and GroupCount
 data = main_table{:,3:end}; 
@@ -65,23 +73,31 @@ for i = 1:n_geno
   normdata(i,:) = logdata(i,:)./std(logdata(i,:)); 
 end
 
-
-fig_dir = [pathname '/fig/'];
+fig_dir = [pathname '/' subfolder_name '/fig/'];
 if exist(fig_dir, 'dir') ~=7
     mkdir(fig_dir);
 end
 
-% a figure describing the raw data
-figure
-load my_colormap;
-imagesc(normdata,[-3 3])
-set(gca,'position',[0 0 1 1],'visible','off')
-set(gcf,'position',[100 100 800 350],'paperposition',[1 1 8 3.5])
-colormap(my_colormap)
-print(gcf,'-depsc2',[fig_dir 'woods1.eps'])
-% better to annotavte/reshape this in illustrator
+fullproj = PCA_plots(normdata, fig_dir, nparams, n_geno);
+filename_output = create_distance(fullproj, main_table, pathname, subfolder_name, filename_output);
+plot_distance(target_geno, [pathname subfolder_name], filename_output);
 
+end
 
+function filename_output = create_distance(fullproj, main_table, pathname, subfolder_name, filename_output)
+euclidean_distances = pdist(fullproj);
+formated_distances = squareform(euclidean_distances);
+distance_table = array2table(formated_distances);
+distance_table.Properties.VariableNames = main_table.genotype;
+
+distance_table = [main_table.genotype, distance_table];
+distance_table.Properties.VariableNames{1} = 'euclidean_distance';
+distance_file = [pathname subfolder_name '/' filename_output];
+writetable(distance_table, distance_file);
+fprintf('Euclidean distance file generated: %s%s\n', [pathname subfolder_name], filename_output);
+end
+
+function fullproj = PCA_plots(normdata, fig_dir, nparams, n_geno)
 % decompose the data matrix (i.e. do principal components analysis
 [u fulls fullv] = svd(normdata);
 
@@ -94,15 +110,16 @@ fullproj = normdata*fullv(:,1:10);
 % and the vector lengths
 fulllen = sqrt(fullproj(:,1).^2 + fullproj(:,2).^2 + fullproj(:,3).^2+ fullproj(:,4).^2 + fullproj(:,5).^2 + fullproj(:,6).^2+ fullproj(:,7).^2 + fullproj(:,8).^2 + fullproj(:,9).^2+ fullproj(:,10).^2);
 
-euclidean_distances = pdist(fullproj);
-formated_distances = squareform(euclidean_distances);
-distance_table = array2table(formated_distances);
-distance_table.Properties.VariableNames = main_table.genotype;
+% a figure describing the raw data
+figure
+load my_colormap;
+imagesc(normdata,[-3 3])
+set(gca,'position',[0 0 1 1],'visible','off')
+set(gcf,'position',[100 100 800 350],'paperposition',[1 1 8 3.5])
+colormap(my_colormap)
+print(gcf,'-depsc2',[fig_dir 'woods1.eps'])
+% better to annotavte/reshape this in illustrator
 
-distance_table = [main_table.genotype, distance_table];
-distance_table.Properties.VariableNames{1} = 'euclidean_distance';
-writetable(distance_table, [pathname filename_output]);
-fprintf('Euclidean distance file generated: %s%s\n', pathname, filename_output);
 
 figure
 hold on
@@ -192,12 +209,12 @@ end
 
 % on the fourth run, eigenvectors 2 and 3 end up switched. so we'll
 % fix that manually
-if size(data,2) == 16
+if size(normdata,2) == 16
 eigvecproj(4,2) = skiponev(4,:,2)*fullv(:,3);
 eigvecproj(4,3) = skiponev(4,:,3)*fullv(:,2);
 end
 
-if size(data,2) == 17
+if size(normdata,2) == 17
 eigvecproj(5,2) = skiponev(5,:,2)*fullv(:,3);
 eigvecproj(5,3) = skiponev(5,:,3)*fullv(:,2);
 end
@@ -218,7 +235,7 @@ randspacing = zeros(numruns,n_geno * (n_geno-1)/2);
 randeigvecproj = zeros(numruns,10);
 
 for i = 1:numruns
-  randnormdata = reshape(normdata(randperm(numel(normdata))),[size(data,1) size(data,2)]);
+  randnormdata = reshape(normdata(randperm(numel(normdata))),[size(normdata,1) size(normdata,2)]);
   [u s v] = svd(randnormdata);
   randeigvecproj(i,:) = diag(v(:,1:10)'*fullv(:,1:10));
   randproj = normdata*v(:,1:10);
@@ -306,3 +323,103 @@ print(gcf,'-depsc2',[fig_dir 'woods6.eps'])
 
 close all;
 end
+
+%20210524, plot distance based on WT+DMSO, input distance file with single
+%category of target_geno
+%202103, removed separate control for 'related WT' because it was changed
+%to 'WT' while creating z scores
+%20210103, fixed a bug of overlapping figures when run right after the last
+%a script that has a figure open
+function plot_distance(target_geno, pathname, filename)
+
+if nargin==1
+    [filename,pathname] = uigetfile('*.csv','select the distance file');
+end
+
+filename_noext = strsplit(filename,'.');
+filename_noext = filename_noext{1};
+
+main_table = readtable([pathname '/' filename]);
+
+fig_dir = [pathname '/fig/'];
+if exist(fig_dir, 'dir') ~=7
+    mkdir(fig_dir);
+end
+
+control_genos_original = {'WT + DMSO'};
+% clean up to match the format of matlab columns
+control_genos_cleaned = regexprep(control_genos_original, '_', '');
+control_genos_cleaned = regexprep(control_genos_cleaned, ' ', '');
+control_genos_cleaned = regexprep(control_genos_cleaned, '+', '_');
+
+% total distance to WT+DMSO
+for i = 1:length(control_genos_cleaned)
+    control_geno = control_genos_cleaned{i};
+   
+    distance = main_table.(control_geno);
+    label = main_table.euclidean_distance;
+       
+    table_temp = table(label, distance);
+    table_sorted = sortrows(table_temp,'distance');
+    table_sorted(1,:) = [];
+    
+    % take only the target rows
+    table1 = get_target_rows(table_sorted, target_geno);
+    
+    writetable(table1,[pathname '/'  filename_noext '_compare_' target_geno '_' control_geno '.csv']);
+    plot_distance_bar(table1.distance, table1.label,...
+        fig_dir, control_geno, target_geno);
+end
+end
+
+function plot_distance_bar(distance, labels, ...
+    fig_dir, control_geno, target_geno)
+
+limit = 100;
+title_name = [target_geno '_to_' control_geno];
+if length(distance) > limit
+    title_name = ['top ' int2str(limit) ' ' title_name];
+else
+    limit = length(distance);
+end
+
+figure;
+barh(distance(1:limit));
+yticklabels(labels(1:limit));
+yticks(1:limit);
+xticks(0:5:max(distance(1:limit)));
+
+title(title_name, 'interpreter', 'none', 'fontsize', 15);
+
+set(gcf, 'PaperPosition', [0 0 6 10]); %Position plot at left hand corner with width 5 and height 5.
+set(gcf, 'PaperSize', [6 10]); 
+set(gca,'Ydir','reverse', 'fontsize', 12, ...
+    'xaxisLocation','top', 'TickLabelInterpreter', 'none');
+saveas(gcf,[fig_dir 'bar_' target_geno '_to_' control_geno],'pdf');
+close(gcf);
+
+end
+
+% take only the rows of column :label that start with target
+% the table content is a cell, so had to take the nested inforation out
+function T_output = get_target_rows(T, target)
+m = 1;
+selected_label = cell(1);
+selected_distance = [];
+for i = 1:size(T,1)
+    the_label = T.label{i};
+    if length(the_label) < length(target)
+        continue;
+    end
+    
+    sub_label = extractBetween(the_label, 1, length(target));
+    if strcmp(sub_label, target)==1
+        selected_label{m,1} = the_label;
+        selected_distance(m,1) = T.(T.Properties.VariableNames{2})(i);
+        m = m + 1;
+    end    
+end
+T_output = table(selected_label, selected_distance);
+T_output.Properties.VariableNames = T.Properties.VariableNames;
+end
+

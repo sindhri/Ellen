@@ -1,10 +1,12 @@
+%20210524, plot distance based on WT+DMSO, input distance file with single
+%category of target_geno
 %202103, removed separate control for 'related WT' because it was changed
 %to 'WT' while creating z scores
 %20210103, fixed a bug of overlapping figures when run right after the last
 %a script that has a figure open
-function plot_distance_WT(pathname, filename)
+function plot_distance(tareget_geno, pathname, filename)
 
-if nargin==0
+if nargin==1
     [filename,pathname] = uigetfile('*.csv','select the distance file');
 end
 
@@ -35,10 +37,11 @@ for i = 1:length(control_genos_cleaned)
     table_sorted = sortrows(table_temp,'distance');
     table_sorted(1,:) = [];
     
-    % plot 1, target
+    % plot 1, target = 'HOM'
     % take only the target rows
     target_geno = 'HOM';
     table1 = get_target_rows(table_sorted, target_geno);
+    
     writetable(table1,[pathname  filename_noext '_compare_' target_geno '_' control_geno '.csv']);
     plot_distance_bar(table1.distance, table1.label,...
         fig_dir, control_geno, target_geno);
@@ -50,8 +53,8 @@ for i = 1:length(control_genos_cleaned)
     target_geno = temp2{1}; % WT or related WT
     table2 = get_target_rows(table_sorted, target_geno);
     table2 = sortrows(table2, 'distance', 'descend');
+    
     writetable(table2,[pathname filename_noext '_compare_' target_geno '_' control_geno '.csv']);
-
     plot_distance_bar(table2.distance, table2.label,...
         fig_dir, control_geno, target_geno);
 end
