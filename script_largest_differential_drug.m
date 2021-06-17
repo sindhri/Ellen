@@ -19,5 +19,8 @@ writetable(allCsv, [pathname output_z_differential]);
 mean_by_geno = average_after_zscore(pathname, output_z_differential);
 
 distance_file = get_euclidean_distance(pathname, mean_by_geno);
-differential_output = get_differential_distance(pathname, distance_file);
-plot_differential_distance_bar(pathname, differential_output);
+differential_distance_file = get_differential_distance(pathname, distance_file);
+plot_differential_distance_bar(pathname, differential_distance_file);
+
+differential_distance_avg_file = avg_over_doses(pathname, differential_distance_file);
+plot_differential_distance_bar(pathname, differential_distance_avg_file);

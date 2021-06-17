@@ -11,7 +11,7 @@ filename_output = [filename_noext '_output.csv'];
 main_table = readtable([pathname distance_file]);
 
 for i = 1:size(main_table,1)
-    genotype_splits = strsplit(main_table.euclidean_distance{i},' + ');
+    genotype_splits = strsplit(main_table.drug{i},' + ');
     main_table.geno{i} = genotype_splits{1};
     main_table.drug{i} = genotype_splits{2};
 end
