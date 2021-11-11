@@ -17,9 +17,11 @@ data_type = ''; %to distinguish old data naming convention
 %from the 2021/11 batch
 for i = 1:length(all_variables)
     varname = all_variables{i};
-    if strcmp(varname(1:3), 'exp')==1
-        times = eval(varname).time;
-        data_type = 'new';
+    if length(varname) >=3
+        if strcmp(varname(1:3), 'exp')==1
+            times = eval(varname).time;
+            data_type = 'new';
+        end
     end
 end
 if isempty(times) % for scn1lab_del44
@@ -84,10 +86,14 @@ for i = 1:length(type_names)
     data_mean(:,i) = mean(data,2,'omitnan');    
     data_sem(:,i) = std(data,0, 2,'omitnan')/sqrt(size(data,2));            
 end
-    make_one_plot(geno, data_mean, times, data_sem,...
-        pathname, type_names, parameter_name);
-    zoomin = length(times)-600:length(times);
-    make_one_plot(geno, data_mean, times, data_sem,...
+%make_one_plot(geno, data_mean, times, data_sem,...
+%        pathname, type_names, parameter_name);
+if strcmp(geno, 'del44') == 1
+        zoomin = 2000:4000; % roughly hour 35-65
+else
+    zoomin = 800:length(times);
+end
+make_one_plot(geno, data_mean, times, data_sem,...
         pathname, type_names, parameter_name, zoomin);
 end
 
