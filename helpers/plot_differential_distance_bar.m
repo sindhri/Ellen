@@ -1,6 +1,7 @@
 %20210617, can only be used for plotting differential distance or
 %differential distance avg
 % added sortrows to sort in descending order
+% used absolute pathname for dir to adapt for subfolders
 function plot_differential_distance_bar(pathname, filename)
 
 distance_table = readtable([pathname filename]);
@@ -33,7 +34,7 @@ xticks(0:5:max(distance(1:limit)));
 
 title(figure_name, 'interpreter', 'none', 'fontsize', 15);
 
-fig_dir = 'fig/';
+fig_dir = [pathname 'fig/'];
 if exist(fig_dir,'dir')~=7
     mkdir(fig_dir);
 end
@@ -42,7 +43,7 @@ set(gcf, 'PaperPosition', [0 0 6 10]); %Position plot at left hand corner with w
 set(gcf, 'PaperSize', [6 10]); 
 set(gca,'Ydir','reverse', 'fontsize', 12, ...
     'xaxisLocation','top', 'TickLabelInterpreter', 'none');
-saveas(gcf,[pathname fig_dir 'bar_' figure_name],'pdf');
+saveas(gcf,[fig_dir 'bar_' figure_name],'pdf');
 close(gcf);
 
 end

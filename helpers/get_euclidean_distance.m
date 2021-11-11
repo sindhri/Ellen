@@ -1,12 +1,20 @@
-function filename_output = get_euclidean_distance(pathname, filename)
+%20210617, added to_exclude_LL
+
+function filename_output = get_euclidean_distance(pathname, filename, ...
+    to_exclude_LL)
 
 if nargin==0
     [filename,pathname] = uigetfile('*.csv','select the mean_by_geno file');
+    to_exclude_LL = 0;
 end
 main_table = readtable([pathname filename]);
 filename_noext = strsplit(filename,'.');
 filename_noext = filename_noext{1};
 filename_output = [filename_noext '_distance.csv'];
+
+if to_exclude_LL == 1
+    main_table = sleep_LL_exclude(main_table);
+end
 
 %skip the first two columns, genotype and GroupCount
 data = main_table{:,3:end}; 

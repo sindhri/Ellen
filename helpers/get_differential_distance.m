@@ -1,4 +1,6 @@
-function filename_output = get_differential_distance(pathname, distance_file)
+%20210617 added target, either 'HOM' or 'HET'
+
+function filename_output = get_differential_distance(target, pathname, distance_file)
 if nargin==0
     [distance_file, pathname] = uigetfile('*.csv','select the distance file');    
 end
@@ -11,7 +13,7 @@ filename_output = [filename_noext '_output.csv'];
 main_table = readtable([pathname distance_file]);
 
 for i = 1:size(main_table,1)
-    genotype_splits = strsplit(main_table.drug{i},' + ');
+    genotype_splits = strsplit(main_table.euclidean_distance{i},' + ');
     main_table.geno{i} = genotype_splits{1};
     main_table.drug{i} = genotype_splits{2};
 end
@@ -21,7 +23,7 @@ drug = cell(1);
 differential_distance = zeros(total_drug, 1);
 for i = 1:total_drug
     geno_name = main_table.drug{i};
-    row_name = ['HOM + ' geno_name];
+    row_name = [target ' + ' geno_name];
     col_name = ['WT + ' geno_name];
     col_name = regexprep(col_name, ' ', '');
     col_name = regexprep(col_name, '-', '_');
@@ -30,6 +32,7 @@ for i = 1:total_drug
 
     one_distance = main_table{strcmp(main_table.euclidean_distance,row_name)==1, col_name};
     drug{i,1} = geno_name;
+    fprintf(['i:' int2str(i) ',row_name:' row_name ',col_name:' col_name '\n']);
     differential_distance(i,1) = one_distance;
 end
 
