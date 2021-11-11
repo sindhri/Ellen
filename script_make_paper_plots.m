@@ -6,6 +6,6 @@
 addpath('helpers/');
 plot_time_series('data');
 
-%plot_time_series('avewaking');
+plot_time_series('avewaking');
 % only del5 has tenminute. need to fix bugs
 % plot_time_series('tenminute');

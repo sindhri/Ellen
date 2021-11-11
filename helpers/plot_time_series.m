@@ -11,10 +11,24 @@ function plot_time_series(parameter_name)
 [filename,pathname] = uigetfile('*.mat','select the combined mat file');
 load([pathname filename]);
 all_variables = who;
-if exist('C','var')
-    times = C.time;
-else
-    times = A.time;
+times = [];
+data_type = ''; %to distinguish old data naming convention 
+%in scn1lab_del44 and the rest of the combined files 
+%from the 2021/11 batch
+for i = 1:length(all_variables)
+    varname = all_variables{i};
+    if strcmp(varname(1:3), 'exp')==1
+        times = eval(varname).time;
+        data_type = 'new';
+    end
+end
+if isempty(times) % for scn1lab_del44
+    data_type = 'old';
+    if exist('C','var')
+        times = C.time;
+    else
+        times = A.time;
+    end
 end
 
 for i = 1:length(all_variables)
@@ -23,21 +37,50 @@ for i = 1:length(all_variables)
         temp = split(variable_name,'_');
         geno = temp{1};
         break;
+    else
+        if contains(variable_name, [parameter_name '_']) 
+           temp = split(variable_name,'_');
+           geno = temp{3};
+           break;
+        end
     end
 end
 
-if strcmp(geno, 'transhet')~=1
-    type_names = {'wt', 'het', 'hom'};
+if strcmp(data_type,'old')==1
+    if strcmp(geno, 'transhet')~=1
+        type_names = {'wt', 'het', 'hom'};
+    else
+        type_names = {'wt', 'het_del44', 'het_del5', 'hom'};
+    end
 else
-    type_names = {'wt', 'het_del44', 'het_del5', 'hom'};
+    type_names = {'WT', 'HET', 'HOM'};
 end
 
-data = eval([geno '_' parameter_name '_wt']);
+%initiate the mean matrix
+varname = [geno '_' parameter_name '_' type_names{1}];
+if exist(varname,'var')
+    data = eval([geno '_' parameter_name '_' type_names{1}]);
+else %to accommodate new naming convention
+    if strcmp(geno, 'chd8') ~=1
+        data = eval([parameter_name '_' type_names{1} '_' geno]);
+    else
+        data = eval([parameter_name '_' type_names{1} '_' geno '_merged']);
+    end
+end
 data_mean = zeros(size(data,1), length(type_names));
 data_sem = zeros(size(data,1), length(type_names));
 
 for i = 1:length(type_names)
-    data = eval([geno '_' parameter_name '_' type_names{i}]);
+    varname = [geno '_' parameter_name '_' type_names{i}];
+    if exist(varname,'var')
+        data = eval([geno '_' parameter_name '_' type_names{i}]);
+    else %to accommodate new naming convention
+    if strcmp(geno, 'chd8') ~=1
+        data = eval([parameter_name '_' type_names{i} '_' geno]);
+    else
+        data = eval([parameter_name '_' type_names{i} '_' geno '_merged']);
+    end
+    end
     data_mean(:,i) = mean(data,2,'omitnan');    
     data_sem(:,i) = std(data,0, 2,'omitnan')/sqrt(size(data,2));            
 end
@@ -62,11 +105,15 @@ end
 
 if size(data,2)==3
     if ~isempty(zoomin)
-        color_lib = {[0, 0, 1],[0, 1, 0],[1, 0, 0]};
+%        color_lib = {[0, 0, 1],[0, 1, 0],[1, 0, 0]};
+        color_lib = {[24, 110, 181]/255,...
+            [18, 99, 26]/255,...
+            [196, 79, 6]/255};
     else
-        color_lib = {[0, 0, 1],[0, 1, 0],[1, 0, 0]};
-%        color_lib = {[201,229,248]/255, ...
-%            [255,222,220]/255, [235,201,129]/255};
+%        color_lib = {[0, 0, 1],[0, 1, 0],[1, 0, 0]};
+        color_lib = {[24, 110, 181]/255,...
+            [18, 99, 26]/255,...
+            [196, 79, 6]/255};
     end
 else
     if ~isempty(zoomin)
@@ -94,7 +141,7 @@ for i = 1:size(data,2)
     curve2 = y - std_dev;
     x2 = [x, fliplr(x)];
     inBetween = [curve1, fliplr(curve2)];
-    fill(x2, inBetween, color_lib{i}, 'facealpha',0.1, 'edgecolor', color_lib{i});
+    fill(x2, inBetween, color_lib{i}, 'facealpha',0.1, 'edgecolor', [1,1,1]);
     hold on;
     p(i) = plot(x, y, 'color',color_lib{i}, 'LineWidth', 1);
 end
