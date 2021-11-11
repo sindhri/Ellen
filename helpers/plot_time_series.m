@@ -86,8 +86,8 @@ for i = 1:length(type_names)
     data_mean(:,i) = mean(data,2,'omitnan');    
     data_sem(:,i) = std(data,0, 2,'omitnan')/sqrt(size(data,2));            
 end
-%make_one_plot(geno, data_mean, times, data_sem,...
-%        pathname, type_names, parameter_name);
+make_one_plot(geno, data_mean, times, data_sem,...
+        pathname, type_names, parameter_name);
 if strcmp(geno, 'del44') == 1
         zoomin = 2000:4000; % roughly hour 35-65
 else
@@ -99,6 +99,9 @@ end
 
 function make_one_plot(geno, data, times, data_std, ...
     pathname, legend_names, parameter_name, zoomin)
+
+data = movmean(data, 50);
+data_std = movmean(data_std, 50);
 if nargin==8
     data = data(zoomin,:);
     times = times(zoomin);
@@ -139,7 +142,7 @@ p = [];
 for i = 1:size(data,2)
     y = data(:,i)'; %important to transpose!
 %    if ~isempty(zoomin)
-        y = movmean(y, 50);
+%        y = movmean(y, 50);
 %    end
     x = times;
     std_dev = data_std(:,i)';
