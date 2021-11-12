@@ -89,9 +89,9 @@ end
 make_one_plot(geno, data_mean, times, data_sem,...
         pathname, type_names, parameter_name);
 if strcmp(geno, 'del44') == 1
-        zoomin = 2000:4000; % roughly hour 35-65
+        zoomin = 2220:4020; % roughly hour 35-65
 else
-    zoomin = 800:length(times);
+    zoomin = 600:min(2400, length(times));
 end
 make_one_plot(geno, data_mean, times, data_sem,...
         pathname, type_names, parameter_name, zoomin);
@@ -162,7 +162,7 @@ end
 set(l, 'interpreter','none');
 title(title_name, 'interpreter','none');
 xlabel('hours');
-xlim([times(1),times(end)]);
+xlim([floor(times(1)),floor(times(end))+1]);
 ylabel('data');
 
 figure_dir = [pathname 'time_series_plots' filesep];
