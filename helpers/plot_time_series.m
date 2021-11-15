@@ -91,7 +91,15 @@ make_one_plot(geno, data_mean, times, data_sem,...
 if strcmp(geno, 'del44') == 1
         zoomin = 2220:4020; % roughly hour 35-65
 else
-    zoomin = 600:min(2400, length(times));
+    if strcmp(geno, 'chd8')==1
+        zoomin = 600:length(times);
+    else
+        if strcmp(geno, 'tbr1')==1
+            zoomin = 750:min(2400, length(times));
+        else
+            zoomin = 600:min(2400, length(times));
+        end
+    end
 end
 make_one_plot(geno, data_mean, times, data_sem,...
         pathname, type_names, parameter_name, zoomin);
